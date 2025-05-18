@@ -1,0 +1,1 @@
+P=Presente, K=Presente, Umidade=74.50%, pH=3.4, Bomba=0
