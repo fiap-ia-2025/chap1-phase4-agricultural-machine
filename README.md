@@ -78,6 +78,9 @@ Esta etapa foca na construção de um sistema físico/simulado de irrigação ba
 - **Wokwi Extension** para simulação do circuito (`diagram.json`) diretamente dentro do VS Code
 - **Biblioteca `DHT` da Adafruit**
 
+### Diagrama do Circuito:
+<img src="img/circuito_diagrama.png" alt="Diagrama" border="0" width="40%" height="40%">
+
 
 ## 💾 Entrega 2 — Armazenamento de Dados, CRUD e Integração com API Climática (em construção)
 
@@ -89,9 +92,55 @@ Nesta segunda fase do projeto, a equipe irá complementar a solução com uma ca
 - Integração com uma **API pública de clima** (como a OpenWeather), permitindo:
   - Obter temperatura, umidade do ar e previsão de chuva em tempo real
   - Enriquecer a lógica de irrigação com base em condições externas (ex: se vai chover, a irrigação pode ser adiada)
-- Visualização opcional por meio de **dashboard em Python** com bibliotecas como `matplotlib`, `streamlit` ou `seaborn`, trazendo clareza para o usuário final sobre o comportamento do sistema
+- Visualização por meio de **dashboard em Python** com bibliotecas como `matplotlib`, `streamlit` ou `seaborn`, trazendo clareza para o usuário final sobre o comportamento do sistema
 
-📌 *Essa etapa será completada e documentada pela segunda parte do grupo.*
+### Armazenamento em banco de dados e CRUD
+em construção
+
+### Integração com API Pública:
+em construção
+
+### 📊 Visualização de Dados:
+O dashboard foi desenvolvido com o objetivo de **transformar dados técnicos coletados dos sensores em informações visuais claras e acionáveis**, mesmo para usuários não técnicos (como agricultores, técnicos de campo ou gestores).
+
+A estrutura visual foi pensada para permitir uma leitura **rápida, comparativa e intuitiva** dos principais indicadores da plantação monitorada.
+
+---
+
+#### 💧 1. Umidade do Solo + Acionamento da Bomba
+
+- **Gráfico de linha** mostra a variação da umidade ao longo do tempo.
+- **Pontos vermelhos** marcam os momentos em que a bomba de irrigação foi acionada automaticamente.
+- O objetivo é ajudar o usuário a:
+  - Ver se a bomba está ativando na hora certa (baixa umidade)
+  - Confirmar se a irrigação teve efeito (a umidade subiu depois?)
+
+---
+
+#### ⚗️ 2. Variação do pH
+
+- **Gráfico de linha** mostra o valor do pH do solo em cada leitura.
+- Uma **faixa verde** indica o intervalo ideal (entre 6.0 e 7.5).
+- O usuário consegue identificar:
+  - Se o solo está ácido ou alcalino demais
+  - Se há necessidade de correção química
+ 
+---
+
+#### 🧪 3. Nutrientes do Solo (Fósforo e Potássio)
+
+- Os nutrientes foram separados em dois **gráficos de barras binários (Presente/Ausente)**, lado a lado.
+- Isso evita confusão visual com sobreposição e permite analisar:
+  - Qual nutriente tem maior ausência
+  - Se existe um padrão de deficiência ao longo do tempo
+
+---
+
+#### 📋 4. Interface Responsiva
+
+- Os gráficos foram dispostos em colunas para facilitar comparações lado a lado (ex: umidade vs. pH).
+- As caixas de texto explicativas ajudam o usuário a entender **como interpretar cada gráfico** e **que decisões tomar**.
+
 
 ## 📁 Estrutura do Projeto
 
@@ -104,10 +153,15 @@ Nesta segunda fase do projeto, a equipe irá complementar a solução com uma ca
 │   ├── platformio.ini          # Configuração do PlatformIO
 │   ├── wokwi.toml              # Caminho para firmware na simulação
 │
-├── entrega2_python/              # Entrega 2: scripts em Python
-│   ├── crud_e_armazenamento.py
-│   ├── integracao_api_clima.py
-│   ├── dashboard.py
+├── entrega2_python/            # Entrega 2: scripts em Python
+│   ├── database/               # Arquivos com operação e setup do banco de dados
+│   │   └── db_operation.py
+│   │   └── db_setup.py
+│   ├── farm_data.db            # Banco de dados
+│   ├── weather_integration.py  # Integração com API climática
+│   ├── main.py                 # Sistema principal com Armazemando e CRUD
+│   ├── dashboard.py            # Dashboard para facilitar tomadas de decisões
+│   ├── sample_data.py          # Dados Iniciais de teste
 │
 ├── img/                        # Imagens utilizadas no README
 │   ├── circuito_diagrama.png   # Print do circuito no Wokwi
@@ -125,6 +179,9 @@ Nesta segunda fase do projeto, a equipe irá complementar a solução com uma ca
   - **PlatformIO IDE** (ícone da formiguinha 🐜)
   - **Wokwi for VS Code** (ícone com `<>` da simulação)
 - Git instalado na máquina (para clonar o repositório)
+- As seguintes bibliotecas instaladas:
+  ```bash
+  pip install streamlit pandas matplotlib seaborn
 
 ---
 
@@ -133,11 +190,9 @@ Nesta segunda fase do projeto, a equipe irá complementar a solução com uma ca
 1. **Clone o repositório do projeto**
    - Abra o terminal (ou terminal integrado do VS Code)
    - Execute o comando:
-
      ```bash
      git clone https://github.com/fiap-ia-2025/chap1-phase3-agricultural-machine/entrega1_esp32
      ```
-
 2. **Compile o projeto com PlatformIO**
    - No VS Code, clique no ícone da formiguinha 🐜 (PlatformIO)
    - Clique em **"Build"** para compilar o `main.cpp`
@@ -149,7 +204,6 @@ Nesta segunda fase do projeto, a equipe irá complementar a solução com uma ca
 
    > Obs: certifique-se de que o projeto foi compilado primeiro com o botão **Build** do PlatformIO.
 
-
 4. **Acompanhe os dados no Monitor Serial**
    - O monitor serial da simulação mostrará:
      - Umidade lida pelo DHT22
@@ -157,12 +211,18 @@ Nesta segunda fase do projeto, a equipe irá complementar a solução com uma ca
      - Presença/ausência de fósforo e potássio (botões)
      - Estado da bomba (ligada ou desligada)
     
-     [Adicionar parte em python]
+5. **Rodar o Dashboard Streamlit**
+   - Execute o comando:
+     ```bash
+     streamlit run dashboard.py
+     ```
+   - Após rodar acesse o dashboard no navegador pelo link: http://localhost:8501
 
 ---
 
-### 🧪 Dicas para testar
+### 🧪 Dicas para testar Aplicação
 
+#### Simulação Wokwi
 - **Botões pressionados = nutriente ausente**
 - **LDR e DHT22** podem ser alterados em tempo real na simulação clicando sobre eles
 - A bomba (LED) **acende somente se a umidade estiver abaixo de 40%**
