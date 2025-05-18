@@ -3,6 +3,7 @@ import sys
 import sqlite3
 from datetime import datetime
 from database.db_setup import create_database
+from weather_integration import WeatherIntegration
 from database.db_operations import (
     connect_db, 
     parse_sensor_data,
@@ -291,10 +292,53 @@ def generate_statistics(conn):
     
     input("\nPressione Enter para continuar...")
 
+def check_weather(conn, weather_api):
+    """Consulta a previsão do tempo e sugere ações de irrigação"""
+    print_header("Consulta de Previsão do Tempo")
+    
+    city = input("Digite o nome da cidade para consulta: ")
+    if not city:
+        city = "São Paulo"  # cidade padrão
+    
+    weather_data = weather_api.get_weather_data(city)
+    
+    if weather_data:
+        print("\n=== Dados Climáticos Atuais ===")
+        print(f"Cidade: {city}")
+        print(f"Temperatura: {weather_data['temperature']}°C")
+        print(f"Umidade do ar: {weather_data['humidity']}%")
+        print(f"Condições: {weather_data['conditions'].capitalize()}")
+        print(f"Chuva prevista: {'Sim' if weather_data['rain'] else 'Não'}")
+        print(f"Última atualização: {weather_data['timestamp']}")
+        
+        # Lógica de recomendação para irrigação conforme previsao do tempo
+        print("\n=== Recomendação para Irrigação ===")
+        if weather_data['rain']:
+            print("Recomendação: ADIAR irrigação - chuva prevista")
+        elif weather_data['humidity'] > 80:
+            print("Recomendação: REDUZIR tempo de irrigação - alta umidade do ar")
+        elif weather_data['temperature'] > 30 and weather_data['humidity'] < 40:
+            print("Recomendação: AUMENTAR irrigação - clima quente e seco")
+        else:
+            print("Recomendação: MANTER programa normal de irrigação")
+    else:
+        print("Não foi possível obter dados climáticos.")
+    
+    input("\nPressione Enter para continuar...")
+
 def main_menu():
     """Exibe o menu principal e processa as escolhas do usuário."""
     # Conectar ao banco de dados
     conn = create_database()
+
+    # Obter a chave da API do ambiente
+    api_key = os.getenv("WEATHER_API_KEY")
+    if not api_key:
+        print("Erro: A variável de ambiente WEATHER_API_KEY não está definida.")
+        sys.exit(1)
+    
+    # Configurar integração com API de clima usando a chave da variável de ambiente
+    weather_api = WeatherIntegration(api_key=api_key)
     
     while True:
         print_header("Sistema de Monitoramento Agrícola")
@@ -304,6 +348,7 @@ def main_menu():
         print("3. Atualizar Leitura")
         print("4. Excluir Leitura")
         print("5. Estatísticas")
+        print("6. Consultar Previsão do Tempo")
         print("0. Sair")
         
         choice = input("\nEscolha uma opção: ")
@@ -318,6 +363,8 @@ def main_menu():
             delete_reading(conn)
         elif choice == '5':
             generate_statistics(conn)
+        elif choice == '6':
+            check_weather(conn, weather_api)
         elif choice == '0':
             print("\nEncerrando o programa...")
             conn.close()
