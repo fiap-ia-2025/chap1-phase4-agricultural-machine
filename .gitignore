@@ -1,0 +1,7 @@
+.pio
+.vscode/launch.json
+.vscode/c_cpp_properties.json
+.n.vscode
+.n__pycache__
+.n*.pyc
+.n.DS_Store
