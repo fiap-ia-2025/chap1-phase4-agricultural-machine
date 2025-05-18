@@ -97,14 +97,14 @@ Nesta segunda fase do projeto, a equipe irá complementar a solução com uma ca
 
 ```bash
 /chap1-phase3-agricultural-machine
-├── parte1_esp32/               # Entrega 1: sistema físico com ESP32
+├── entrega1_esp32/               # Entrega 1: sistema físico com ESP32
 │   ├── src/
 │   │   └── main.cpp
 │   ├── diagram.json            # Circuito simulado no Wokwi
 │   ├── platformio.ini          # Configuração do PlatformIO
 │   ├── wokwi.toml              # Caminho para firmware na simulação
 │
-├── parte2_python/              # Entrega 2: scripts em Python
+├── entrega2_python/              # Entrega 2: scripts em Python
 │   ├── crud_e_armazenamento.py
 │   ├── integracao_api_clima.py
 │   ├── dashboard.py
@@ -135,9 +135,8 @@ Nesta segunda fase do projeto, a equipe irá complementar a solução com uma ca
    - Execute o comando:
 
      ```bash
-     git clone https://github.com/fiap-ia-2025/chap1-phase3-agricultural-machine
+     git clone https://github.com/fiap-ia-2025/chap1-phase3-agricultural-machine/entrega1_esp32
      ```
-
 
 2. **Compile o projeto com PlatformIO**
    - No VS Code, clique no ícone da formiguinha 🐜 (PlatformIO)
