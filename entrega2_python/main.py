@@ -393,52 +393,5 @@ def main_menu():
             input("Pressione Enter para continuar...")
 
 
-# def main_menu():
-#     """Exibe o menu principal e processa as escolhas do usuário."""
-#     # Conectar ao banco de dados
-#     conn = create_database()
-
-#     # Obter a chave da API do ambiente
-#     api_key = os.getenv("WEATHER_API_KEY")
-#     if not api_key:
-#         print("Erro: A variável de ambiente WEATHER_API_KEY não está definida.")
-#         sys.exit(1)
-    
-#     # Configurar integração com API de clima usando a chave da variável de ambiente
-#     weather_api = WeatherIntegration(api_key=api_key)
-    
-#     while True:
-#         print_header("Sistema de Monitoramento Agrícola")
-        
-#         print("1. Processar Dados de Leitura")
-#         print("2. Visualizar Leituras")
-#         print("3. Atualizar Leitura")
-#         print("4. Excluir Leitura")
-#         print("5. Estatísticas")
-#         print("6. Consultar Previsão do Tempo")
-#         print("0. Sair")
-        
-#         choice = input("\nEscolha uma opção: ")
-        
-#         if choice == '1':
-#             process_data_file(conn)
-#         elif choice == '2':
-#             view_readings(conn)
-#         elif choice == '3':
-#             update_reading(conn)
-#         elif choice == '4':
-#             delete_reading(conn)
-#         elif choice == '5':
-#             generate_statistics(conn)
-#         elif choice == '6':
-#             check_weather(conn, weather_api)
-#         elif choice == '0':
-#             print("\nEncerrando o programa...")
-#             conn.close()
-#             sys.exit(0)
-#         else:
-#             print("\nOpção inválida. Por favor, tente novamente.")
-#             input("\nPressione Enter para continuar...")
-
 if __name__ == "__main__":
     main_menu()
