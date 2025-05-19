@@ -169,6 +169,18 @@ Todas as funções ficam por trás de um menu intuitivo no terminal (`main_menu`
 - 📊 Gerar **Estatísticas** resumidas.
 - ⛅ Consultar **Previsão do Tempo** (via integração com API).
 
+### Outras Informações
+
+#### Sobre o Arquivo `sample_data.txt`:
+
+O código espera exatamente, em cada linha, os dados no seguinte formato (dados de exemplo):`P=Presente, K=Presente, Umidade=74.50%, pH=3.4, Bomba=0`. Além disso, ele processa apenas a primeira linha do arquivo (linha 1), mesmo que contenha múltiplas linhas. Isso garante:
+
+- **Timestamp único**: O código gera um timestamp no momento do processamento, evitando a simulação incorreta de leituras simultâneas.
+
+- **Compatibilidade com o fluxo real**: No ESP32, as leituras seriam inseridas sequencialmente (uma por vez), e o aviso para arquivos com múltiplas linhas ajuda a manter essa fidelidade.
+
+- **Tolerância a erros**: Arquivos com linhas extras não quebram o sistema, mas o usuário é alertado de que apenas a primeira linha será processada.
+
 <br>
 
 ## 🌦️ Integração com API Pública:

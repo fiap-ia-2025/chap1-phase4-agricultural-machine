@@ -1,1 +1,2 @@
-P=Presente, K=Presente, Umidade=74.50%, pH=3.4, Bomba=0
+P=Ausente, K=Presente, Umidade=73.70%, pH=3.9, Bomba=0
+

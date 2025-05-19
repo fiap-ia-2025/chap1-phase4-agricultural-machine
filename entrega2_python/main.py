@@ -85,31 +85,36 @@ def process_data_file(conn):
     count_duplicate = 0
     
     with open(file_path, 'r') as file:
-        for line_num, line in enumerate(file, 1):
-            line = line.strip()
-            count_total += 1
+        lines = file.readlines()
+        line = ""
+        if len(lines) > 1:
+            print("Aviso: O arquivo contém múltiplas linhas. Apenas a primeira será processada.")
+
+        line = lines[0].strip() if lines else ""
+            
+        if line:
+            count_total = 1
             try:
-                    data = parse_sensor_data(line)
-                    
-                    # Verificar se já existe uma leitura com este timestamp
-                    if data['timestamp'] in existing_timestamps:
-                        count_duplicate += 1
-                        continue
-                    
+                data = parse_sensor_data(line)
+                
+                # Verificar se já existe uma leitura com este timestamp
+                if data['timestamp'] in existing_timestamps:
+                    count_duplicate += 1
+                else:
                     # Inserir nova leitura
                     insert_sensor_reading(conn, 1, data)
                     existing_timestamps.add(data['timestamp'])
                     count_new += 1
                     
             except Exception as e:
-                    print(f"Erro ao processar linha {line_num}: {line}")
-                    print(f"Erro: {e}")
-    
+                print(f"Erro ao processar a linha: {line}")
+                print(f"Detalhe do erro: {e}")
+
     print(f"\nProcessamento concluído!")
     print(f"Total de leituras no arquivo: {count_total}")
     print(f"Novas leituras inseridas: {count_new}")
     print(f"Leituras duplicadas ignoradas: {count_duplicate}")
-    
+
     input("\nPressione Enter para continuar...")
 
 def view_readings(conn):

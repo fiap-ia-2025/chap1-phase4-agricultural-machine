@@ -197,20 +197,3 @@ def delete_sensor_reading(conn, reading_id):
     conn.commit()
     return True
 
-# Função para processar arquivo de dados do monitor serial
-def process_serial_data_file(file_path, conn, id_plantacao=1):
-    
-    count = 0
-    
-    with open(file_path, 'r') as file:
-        for line in file:
-            line = line.strip()
-            try:
-                data = parse_sensor_data(line)
-                insert_sensor_reading(conn, id_plantacao, data)
-                count += 1
-            except Exception as e:
-                print(f"Erro ao processar linha: {line}")
-                print(f"Erro: {e}")
-    
-    return count
