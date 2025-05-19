@@ -92,7 +92,7 @@ Esta etapa foca na construção de um sistema físico/simulado de irrigação ba
 
 <br>
 
-## 💾 Entrega 2 — Armazenamento de Dados, CRUD e Integração com API Climática (em construção)
+## 💾 Entrega 2 — Armazenamento de Dados, CRUD e Integração com API Climática 
 
 Nesta segunda fase do projeto, a equipe complementa a solução com uma camada de **persistência e inteligência contextual**, que envolve:
 
