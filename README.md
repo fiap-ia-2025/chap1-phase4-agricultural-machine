@@ -31,6 +31,11 @@
 
 # 🌿 Sistema de Irrigação Inteligente com ESP32
 
+### 🎥 Assista à demonstração no YouTube
+
+[![Assista à demonstração no YouTube](https://img.youtube.com/vi/kO4M81SsNnA/0.jpg)](https://youtu.be/kO4M81SsNnA)
+
+
 ## 📘 Descrição Geral
 
 Este projeto faz parte de uma solução integrada de **irrigação inteligente com ESP32**, desenvolvida como atividade prática no curso de Inteligência Artificial da FIAP. Seu principal objetivo é aplicar conceitos de **automação agrícola**, **monitoramento ambiental**, **programação embarcada** e **persistência de dados**, simulando um cenário real de controle e otimização do uso da água em plantações.
