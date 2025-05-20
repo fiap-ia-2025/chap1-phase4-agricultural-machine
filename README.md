@@ -327,27 +327,31 @@ A estrutura visual foi pensada para permitir uma leitura **rápida, comparativa 
 
 ### Parte 1 – Simulação do Hardware (ESP32 no Wokwi)
 
-1. **Clone o repositório e entre na pasta da Entrega 1**
+1. **Clone o repositório**
 
    - Abra o terminal
    - Execute o comando:
 
      ```bash
      git clone https://github.com/fiap-ia-2025/chap1-phase3-agricultural-machine.git
-
-     cd chap1-phase3-agricultural-machine/entrega1_esp32
      ```
 
 <br>
 
-2. **Compile o projeto com PlatformIO**
+2. **Abra o VS Code e carregue apenas a pasta entrega1_esp32 como uma janela separada.**
 
-- No VS Code, clique no ícone da formiguinha 🐜 (PlatformIO)
-- Clique em **"Build"** para compilar o `main.cpp`
+- Não abra a pasta raiz do repositório. Clique em "Abrir Pasta" no VS Code e selecione diretamente `entrega1_esp32`.
 
 <br>
 
-3. **Execute a simulação com Wokwi**
+3. **Compile o projeto com PlatformIO**
+
+- No VS Code, clique no ícone da formiguinha 🐜 (PlatformIO) no menu lateral esquerdo
+- Clique em **"Build"** para compilar o `main.cpp` (aguarde a conclusão)
+
+<br>
+
+4. **Execute a simulação com Wokwi**
 
 - Pressione `Ctrl+Shift+P` (ou `Cmd+Shift+P` no Mac) para abrir a Command Palette
 - Digite `>Wokwi: Start Simulation` e pressione Enter
@@ -357,7 +361,7 @@ A estrutura visual foi pensada para permitir uma leitura **rápida, comparativa 
 
 <br>
 
-4. **Acompanhe os dados no Monitor Serial**
+5. **Acompanhe os dados no Monitor Serial**
 
 - O monitor serial da simulação mostrará:
 
@@ -368,45 +372,86 @@ A estrutura visual foi pensada para permitir uma leitura **rápida, comparativa 
 
   <br>
 
-### Parte 2 – Sistema de CRUD (Python)
+6. **Copie a linha gerada no monitor serial da simulação**
 
-1. **Acessar o menu interativo para CRUD das leituras (Entrega 2)**
+- A simulação exibe uma linha com os seguintes dados (exemplo):
 
-   - No terminal, navegue até a pasta da Entrega 2:
-     ```bash
-     cd ../entrega2_python
-     ```
-   - Execute o script principal para abrir o menu:
-     ```bash
-     python main.py
-     ```
-   - O programa exibirá um menu interativo com as opções Criar, Ler, Atualizar e Excluir registros de leituras armazenadas no banco SQL simulado. Siga as instruções na tela para realizar cada operação.
+  ```bash
+   P=Presente, K=Presente, Umidade=74.50%, pH=3.4, Bomba=0
+  ```
 
-     ```bash
-     ================================================================================
-     ====================== Sistema de Monitoramento Agrícola =======================
-     ================================================================================
+  - Copie essa linha para usar na próxima etapa
 
-     1. Processar Dados de Leitura
-     2. Visualizar Leituras
-     3. Atualizar Leitura
-     4. Excluir Leitura
-     5. Estatísticas
-     6. Consultar Previsão do Tempo
-     0. Sair
+  <br>
 
-     Escolha uma opção:
-     ```
+### Parte 2 – Sistema de CRUD e Visualização (Python)
+
+7. **Abra outra janela do VS Code e carregue apenas a pasta `entrega2_python`**
+
+- Novamente, não abra a raiz — selecione apenas a pasta `entrega2_python`
 
 <br>
 
-2. **Rodar o Dashboard Streamlit**
-   - Execute o comando:
-     ```bash
-     streamlit run dashboard.py
-     ```
-   - Após rodar acesse o dashboard no navegador pelo link: http://localhost:8501
+8. **Cole o dado simulado no arquivo `sample_data.txt`**
 
+- Abra o arquivo `sample_data.txt` na pasta
+- Substitua ou adicione a linha copiada na simulação.
+
+  - ⚠️ **Atenção:** apenas a **primeira linha** do arquivo (`linha 1`) será processada pelo sistema, mesmo que o arquivo contenha várias linhas
+
+  > Para mais detalhes, consulte a seção [Sobre o arquivo sample_datatxt](#sobre-o-arquivo-sample_datatxt)
+
+<br>
+
+9. **Execute o sistema**
+
+- No terminal do VS Code (dentro da pasta `entrega2_python`), execute:
+  ```bash
+  python main.py
+  ```
+
+<br>
+
+10. **Use o menu interativo para processar e manipular os dados:**
+
+```bash
+================================================================================
+====================== Sistema de Monitoramento Agrícola =======================
+================================================================================
+
+1. Processar Dados de Leitura
+2. Visualizar Leituras
+3. Atualizar Leitura
+4. Excluir Leitura
+5. Estatísticas
+6. Consultar Previsão do Tempo
+0. Sair
+
+Escolha uma opção:
+```
+
+- Escolha a opção 1 para processar os dados do `sample_data.txt` e inseri-los no banco SQLite.
+- As demais opções permitem visualizar, editar e consultar os dados armazenados.
+
+<br>
+
+11. **Rodar o Dashboard Streamlit**
+
+- Execute o comando:
+  ```bash
+  streamlit run dashboard.py
+  ```
+- Após rodar acesse o dashboard no navegador pelo link: http://localhost:8501
+
+<br>
+
+---
+
+### ℹ️ Observações
+
+- Importante: devido à forma como o VS Code e o PlatformIO gerenciam ambientes, o projeto só funcionará corretamente se cada pasta (`entrega1_esp32` e `entrega2_python`) for aberta em uma janela separada do VS Code.
+
+- Certifique-se de que o dado copiado da simulação no Wokwi siga o mesmo formato esperado pelo script da `entrega2`.
 <br>
 
 ---
