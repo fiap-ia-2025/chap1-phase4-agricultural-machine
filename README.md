@@ -356,6 +356,7 @@ A estrutura visual foi pensada para permitir uma leitura **rápida, comparativa 
 ├── img/                        # Imagens utilizadas no README
 │   ├── circuito_diagrama.png   # Print do circuito no Wokwi
 │   ├── logo_fiap.png           # Logo da faculdade
+│   ├── tabela_sql.png          # Print da visualização da tabela via SQLite Viewer na IDE
 │
 ├── .gitignore                  # Arquivos/pastas ignorados pelo Git
 └── README.md                   # Documentação geral do projeto
@@ -527,6 +528,10 @@ Escolha uma opção:
 - Durante os testes, execute operações CRUD pelo menu interativo da aplicação.
 - Caso já esteja com uma tabela aberta no viewer, ela não se atualiza automaticamente depois de uma operação. Basta clicar em Refresh/Reload na interface do SQLite para ver as mudanças.
 
+![Visualização da tabela no SQLite](img/tabela_sqlite.png)  
+*Esta imagem mostra um exemplo de tabela SQLite deste projeto visualizada diretamente no VS Code.  
+Os dados exibidos podem não corresponder exatamente aos que você verá ao rodar o projeto, devido a testes ou atualizações realizadas.  
+O objetivo principal desta imagem é ilustrar a estrutura do banco, que se mantém constante independentemente dos valores dos dados.*
 <br>
 
 ## ✅ Conclusão
