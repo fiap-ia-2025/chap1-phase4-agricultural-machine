@@ -6,9 +6,8 @@
   </a>
 </p>
 
-## 👥 Grupo XX
+## 👥 Grupo 21
 
-<!-- Nome oficial do grupo, se houver. Pode usar um nome criativo também -->
 
 ## 👨‍🎓 Integrantes:
 
