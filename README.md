@@ -202,16 +202,74 @@ Ao selecionar a consulta de previsão do tempo, o sistema exibe:
 - É necessário possuir uma chave de API válida do OpenWeatherMap
 - A chave deve ser configurada como variável de ambiente no sistema com o nome `WEATHER_API_KEY`
 
-### Configuração da Chave
+### 🔑 Sobre a API Key do OpenWeatherMap
 
-1. Obtenha uma chave gratuita no site [OpenWeatherMap](https://openweathermap.org)
-2. Configure a variável de ambiente no seu sistema operacional.
+Para integrar com a API do OpenWeatherMap, você precisará obter uma chave de API (API Key). Siga os passos abaixo:
+
+---
+
+#### 📝 Como obter sua API Key gratuita
+
+#### Cadastro no OpenWeatherMap
+
+Acesse: [https://home.openweathermap.org/users/sign_up](https://home.openweathermap.org/users/sign_up)
+
+1. Preencha o formulário com seus dados (nome, e-mail, senha).
+2. Aceite os termos e clique para finalizar o cadastro.
+
+#### Ativar sua conta
+
+1. Verifique seu e-mail.
+2. Clique no link de ativação enviado pelo OpenWeatherMap.
+
+#### Encontrar sua API Key
+
+1. Faça login em: [https://home.openweathermap.org/](https://home.openweathermap.org/)
+2. No menu superior, clique em **"API keys"**.
+3. Uma chave padrão será exibida. Você pode usá-la ou criar uma nova.
+
+---
+
+#### 📦 Planos disponíveis
+
+O plano gratuito é suficiente para a proposta deste projeto (limite de requisições por minuto/dia, etc.).
+
+---
+
+### ⚙️ Como configurar a API Key no sistema
+
+#### 💻 Linux / macOS (Terminal Bash/Zsh)
+
+```bash
+export WEATHER_API_KEY="SUA_CHAVE_AQUI"
+````
+- Essa variável ficará disponível apenas durante a sessão atual.
+Para torná-la permanente, adicione ao seu `.bashrc`, `.zshrc` ou `.bash_profile`.
+
+#### 🪟 Windows (PowerShell)
+
+```powershell
+$env:WEATHER_API_KEY="SUA_CHAVE_AQUI"
+````
+- Essa variável ficará disponível apenas durante a sessão atual do powershell.
+- Se quiser tornar a variável permanente no Windows, use:
+  
+ ```powershell
+[System.Environment]::SetEnvironmentVariable("WEATHER_API_KEY", "SUA_CHAVE_AQUI", "User")
+````
+
+#### 🚀 Uso no programa
+
+**Após definir a variável:**
+
+1. Se definiu como permanente, reinicie o terminal ou o computador para garantir que ela esteja acessível nas novas sessões.
+
+2. Execute o programa e selecione a opção 6, que inicializa a integração com o OpenWeatherMap.
 
 ### Observações Importantes
 
 - O sistema continua funcionando normalmente mesmo sem a chave de API configurada
 - A funcionalidade de previsão do tempo ficará inacessível até a configuração adequada
-- Quando acessada sem a chave, o sistema exibirá uma mensagem clara sobre como resolver o problema
 - A primeira consulta ao serviço meteorológico inicializa a integração, que é mantida para consultas subsequentes
 
 ### 📋 Exemplo de saída
