@@ -2,7 +2,7 @@
 
 <p align="center">
   <a href="https://www.fiap.com.br/">
-    <img src="img/logo-fiap.png" alt="FIAP - Faculdade de Informática e Administração Paulista" border="0" width="40%" height="40%">
+    <img src="assets/logo-fiap.png" alt="FIAP - Faculdade de Informática e Administração Paulista" border="0" width="40%" height="40%">
   </a>
 </p>
 
@@ -92,7 +92,7 @@ Esta etapa foca na construção de um sistema físico/simulado de irrigação ba
 
 ### Diagrama do Circuito:
 
-<img src="img/circuito_diagrama.png" alt="Diagrama" border="0" width="40%" height="40%">
+<img src="assets/circuito_diagrama.png" alt="Diagrama" border="0" width="40%" height="40%">
 
 <br>
 
@@ -358,7 +358,7 @@ A estrutura visual foi pensada para permitir uma leitura **rápida, comparativa 
 │   ├── dashboard.py            # Dashboard para facilitar tomadas de decisões
 │   ├── sample_data.py          # Dados Iniciais de teste
 │
-├── img/                        # Imagens utilizadas no README
+├── assets/                        # Imagens utilizadas no README
 │   ├── circuito_diagrama.png   # Print do circuito no Wokwi
 │   ├── logo_fiap.png           # Logo da faculdade
 │   ├── tabela_sql.png          # Print da visualização da tabela via SQLite Viewer na IDE
@@ -533,7 +533,7 @@ Escolha uma opção:
 - Durante os testes, execute operações CRUD pelo menu interativo da aplicação.
 - Caso já esteja com uma tabela aberta no viewer, ela não se atualiza automaticamente depois de uma operação. Basta clicar em Refresh/Reload na interface do SQLite para ver as mudanças.
 
-![Visualização da tabela no SQLite](img/tabela_sqlite.png)  
+![Visualização da tabela no SQLite](assets/tabela_sqlite.png)  
 *Esta imagem mostra um exemplo de tabela SQLite deste projeto visualizada diretamente no VS Code.  
 Os dados exibidos podem não corresponder exatamente aos que você verá ao rodar o projeto, devido a testes ou atualizações realizadas.  
 O objetivo principal desta imagem é ilustrar a estrutura do banco, que se mantém constante independentemente dos valores dos dados.*

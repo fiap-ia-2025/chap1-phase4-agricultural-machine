@@ -60,7 +60,7 @@ def process_data_file(conn):
     print_header("Processar Dados de Leitura")
     
     # Solicitar o caminho do arquivo
-    default_file = "sample_data.txt"
+    default_file = "./../../documents/sample_data.txt"
     file_path = input(f"Digite o caminho do arquivo (ou Enter para usar '{default_file}'): ")
     if not file_path:
         file_path = default_file

@@ -6,3 +6,4 @@
 .n*.pyc
 .n.DS_Store
 .__pycache__/
+.vscode
