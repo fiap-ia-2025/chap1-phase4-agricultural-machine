@@ -3,6 +3,8 @@ import pandas as pd  # Manipula e carrega dados em tabelas (DataFrames)
 import matplotlib.pyplot as plt  # Cria e personaliza gráficos com controle total (base de visualização)
 import seaborn as sns  # Gera gráficos estatísticos com visual bonito e menos código
 import sqlite3
+import datetime
+# Importa bibliotecas necessárias
 
 # Conexão com Base de dados
 conn = sqlite3.connect("farm_data.db")
@@ -20,6 +22,29 @@ st.title("🌿 Dashboard - Sistema de Irrigação Inteligente")
 st.markdown(
     "Este painel apresenta a leitura dos sensores do solo e o comportamento do sistema de irrigação automático.")
 
+# Adiciona filtro de datas
+min_date = pd.to_datetime(df['timestamp']).min()
+max_date = pd.to_datetime(df['timestamp']).max()
+if pd.isnull(min_date) or pd.isnull(max_date):
+    min_date = max_date = datetime.date.today()
+else:
+    min_date = min_date.date()
+    max_date = max_date.date()
+date_range = st.date_input("Selecione o intervalo de datas", [min_date, max_date])
+
+# Filtra o DataFrame conforme seleção
+if len(date_range) == 2:
+    start, end = date_range
+    mask = (pd.to_datetime(df['timestamp']) >= pd.to_datetime(start)) & (pd.to_datetime(df['timestamp']) <= pd.to_datetime(end))
+    df = df.loc[mask]
+
+# Botão para atualizar dados em tempo real
+if st.button("🔄 Atualizar Dados"):
+    conn = sqlite3.connect("farm_data.db")
+    df = pd.read_sql_query("SELECT * FROM leitura_sensor", conn)
+    conn.close()
+    st.rerun()
+    
 # Cria seção com análise de Umidade e pH lado a lado
 col1, col2 = st.columns(2)
 
