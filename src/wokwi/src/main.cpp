@@ -54,10 +54,12 @@ void loop() {
 
     float phSimulated = (phRaw / 4095.0f) * 14.0f;
     float humidity = dht.readHumidity();
+    float temperature = dht.readTemperature();
 
-    if (isnan(humidity)) {
-      Serial.println("Falha ao ler umidade!");
-      humidity = 0.0f;
+
+    if (isnan(humidity) || isnan(temperature)) {
+      Serial.println("Falha ao ler sensores de umidade e temperatura!");
+      return; // Sai do loop se a leitura falhar
     }
 
     // Otimização: char para status simples
@@ -74,12 +76,15 @@ void loop() {
     Serial.print((uint8_t)humidity); // uint8_t suficiente para 0-100%
     Serial.print("% pH: ");
     Serial.print(phSimulated, 1);
+    Serial.print(" Temp: ");
+    Serial.print((uint8_t)temperature);
+    Serial.print("C ");
     Serial.print(" P: ");
     Serial.print(phosphorusStatus);
     Serial.print(" K: ");
     Serial.print(potassiumStatus);
     Serial.print(" B: ");
-    Serial.println(shouldIrrigate ? "1 (Irrigando)" : "0 (Parado)");    
+    Serial.println(shouldIrrigate ? "1" : "0");    
 
     // Exibe informações no LCD
     lcd.clear();
@@ -90,7 +95,9 @@ void loop() {
     lcd.print(phSimulated, 1);
 
     lcd.setCursor(0, 1);
-    lcd.print("P:");
+    lcd.print("T:");
+    lcd.print((uint8_t)temperature);
+    lcd.print(" P:");
     lcd.print(phosphorusStatus);
     lcd.print(" K:");
     lcd.print(potassiumStatus);
