@@ -2,9 +2,9 @@ import os
 import sys
 import sqlite3
 from datetime import datetime
-from database.db_setup import create_database
+from db_setup import create_database
 from weather_integration import WeatherIntegration
-from database.db_operations import (
+from db_operations import (
     connect_db, 
     parse_sensor_data,
     insert_sensor_reading,
