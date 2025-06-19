@@ -1,5 +1,7 @@
 #include <Arduino.h>
 #include <DHT.h>
+#include <Wire.h>
+#include <LiquidCrystal_I2C.h>
 
 // Definição dos pinos conectados aos sensores e atuadores
 #define PHOSPHORUS_BUTTON_PIN   5   // botão que simula ausência de fósforo quando pressionado
@@ -10,6 +12,8 @@
 #define DHTTYPE DHT22
 DHT dht(HUMIDITY_SENSOR_PIN, DHTTYPE);
 
+// LCD I2C: endereço 0x27, 16 colunas, 2 linhas
+LiquidCrystal_I2C lcd(0x27, 16, 2);
 
 void setup() {
   Serial.begin(115200);  // inicia comunicação com o monitor serial
@@ -24,6 +28,10 @@ void setup() {
 
   // Inicializa o sensor de umidade
   dht.begin(); 
+
+  // Inicializa o LCD
+  lcd.init();
+  lcd.backlight();
 }
 
 void loop() {
@@ -58,6 +66,22 @@ void loop() {
   } else {
     Serial.println(", Bomba=0");
   }
+
+  // Exibe informações no LCD
+  lcd.clear();
+  lcd.setCursor(0, 0);
+  lcd.print("Umi:");
+  lcd.print(humidity, 2);
+  lcd.print("% pH:");
+  lcd.print(phSimulated, 1);
+
+  lcd.setCursor(0, 1);
+  lcd.print("P:");
+  lcd.print(phosphorusAbsent ? "A" : "P");
+  lcd.print(" K:");
+  lcd.print(potassiumAbsent ? "A" : "P");
+  lcd.print(" B:");
+  lcd.print(shouldIrrigate ? "1" : "0");
 
   delay(1000);
 }
