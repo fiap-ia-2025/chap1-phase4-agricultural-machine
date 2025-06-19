@@ -8,13 +8,9 @@ st.title("🌿 Dashboard - Sistema de Irrigação Inteligente")
 st.markdown(
     "Este painel apresenta a leitura dos sensores do solo e o comportamento do sistema de irrigação automático.")
 
-
-
-st.title('Leitura do Sensor')
-
 # Conexão com Base de dados
 st.header('Conexão com Base de dados')
-arquivo = 'D:\PARTICULAR\FIAP\FASE 4\chap1-phase4-agricultural-machine\scripts\\farm_data.db'
+arquivo = 'farm_data.db'
 conn = sqlite3.connect(arquivo)
 query = "SELECT * FROM leitura_sensor"
 df = pd.read_sql_query(query, conn)

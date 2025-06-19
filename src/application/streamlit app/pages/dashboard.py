@@ -4,7 +4,7 @@ import seaborn as sns  # Gera gráficos estatísticos com visual bonito e menos 
 import pandas as pd  # Manipula e carrega dados em tabelas (DataFrames)
 import sqlite3
 
-arquivo = 'D:\PARTICULAR\FIAP\FASE 4\chap1-phase4-agricultural-machine\scripts\\farm_data.db'
+arquivo = 'farm_data.db'
 conn = sqlite3.connect(arquivo)
 query = "SELECT * FROM leitura_sensor"
 df = pd.read_sql_query(query, conn)
@@ -147,7 +147,7 @@ if x_var in df.columns and y_var in df.columns:
     st.write(f"A correlação de Pearson entre {y_var} e {x_var} é: {corr_temp_prod:.2f}")
 
 # Plota Gráfico e Ajusta Visual
-fig_int, ax_int = plt.subplots(figsize=(6, 3))
+fig_int, ax_int = plt.subplots(figsize=(12, 3))
 sns.barplot(data=df, x=x_var, y=y_var, hue=color_var, ax=ax_int)
 ax_int.set_title(f'{y_var} x {x_var} colorido por {color_var}')
 ax_int.set_ylabel(y_var)
