@@ -1,26 +1,16 @@
 import streamlit as st  # Cria a interface web interativa com Streamlit
-import pandas as pd  # Manipula e carrega dados em tabelas (DataFrames)
 import matplotlib.pyplot as plt  # Cria e personaliza gráficos com controle total (base de visualização)
 import seaborn as sns  # Gera gráficos estatísticos com visual bonito e menos código
+import pandas as pd  # Manipula e carrega dados em tabelas (DataFrames)
 import sqlite3
 import datetime
 # Importa bibliotecas necessárias
 
-# Conexão com Base de dados
-conn = sqlite3.connect("farm_data.db")
-df = pd.read_sql_query("SELECT * FROM leitura_sensor", conn)
-pd.set_option('display.max_columns', None)   # mostra todas as colunas
-pd.set_option('display.max_rows', None)      # mostra todas as linhas
-pd.set_option('display.width', None)         # evita quebra de linha
-pd.set_option('display.max_colwidth', None)
-print(df)
-conn.close()
-
-# Estrutura do cabeçalho e layout da página
-st.set_page_config(page_title="Sistema de Irrigação Inteligente", layout="wide")
-st.title("🌿 Dashboard - Sistema de Irrigação Inteligente")
-st.markdown(
-    "Este painel apresenta a leitura dos sensores do solo e o comportamento do sistema de irrigação automático.")
+arquivo = 'farm_data.db'
+conn = sqlite3.connect(arquivo)
+query = "SELECT * FROM leitura_sensor"
+df = pd.read_sql_query(query, conn)
+df['timestamp'] = pd.to_datetime(df['timestamp'])
 
 # Adiciona filtro de datas
 min_date = pd.to_datetime(df['timestamp']).min()
@@ -50,8 +40,8 @@ col1, col2 = st.columns(2)
 
 # ---- Análise 1 (Umidade do Solo + Acionamento): Avaliar se o sistema está acionando a bomba no momento certo ----
 with col1:
-    # Subtítulo e explicação da seção
-    st.subheader("📈 Umidade do Solo e Acionamento da Bomba")
+    # Título e explicação da seção
+    st.header("📈 Umidade do Solo e Acionamento da Bomba")
     st.info("""
     Este gráfico mostra a variação da umidade do solo com marcações dos momentos de irrigação.
 
@@ -83,8 +73,8 @@ with col1:
 
 # ---- Análise 2 (Variação de pH): Analisar o comportamento no pH no solo ao longo do tempo ----
 with col2:
-    # Subtítulo e explicação da seção de pH
-    st.subheader("🧪 Variação do pH do Solo")
+    # Título e explicação da seção de pH
+    st.header("🧪 Variação do pH do Solo")
     st.info("""
     Este gráfico mostra como o pH do solo está variando ao longo do tempo.  
 
@@ -112,8 +102,8 @@ with col2:
     st.pyplot(fig_ph)
 
 # ---- Análise 3 (Nutrientes em solo): Identificar frequência e padrão de ausência de nutrientes no solo ao longo do tempo (P e K) ----
-# Subtítulo e explicação da seção de nutrientes
-st.subheader("🧪 Nutrientes no Solo")
+# Título e explicação da seção de nutrientes
+st.header("🧪 Nutrientes no Solo")
 st.info("""
 🌱 Este gráfico mostra a presença ou ausência dos nutrientes **Fósforo (P)** e **Potássio (K)** ao longo do tempo.
 
@@ -161,4 +151,31 @@ with col4:
     plt.xticks(rotation=45)
     plt.ylim(0, 1.2)
     st.pyplot(fig_k)
+
+# ---- Análise 4 (interativa)
+# Título
+st.header('Análise Interativa')
+# Seleção de variáveis pelo usuário
+st.subheader('Gráfico de Dispersão Interativo')
+
+col1, col2, col3 = st.columns(3)
+columns_numeric= ["timestamp","fosforo", "potassio", "ph", "umidade", "status_bomba"]
+with col1:
+    x_var = st.selectbox('Selecione a variável X:', options=columns_numeric)
+with col2:
+    y_var = st.selectbox('Selecione a variável Y:', options=columns_numeric)
+with col3:
+    color_var = st.selectbox('Selecione a variável para colorir:', options=columns_numeric)
+
+if x_var in df.columns and y_var in df.columns:
+    corr_temp_prod = df[[x_var,y_var]].corr().iloc[0,1]
+    st.write(f"A correlação de Pearson entre {y_var} e {x_var} é: {corr_temp_prod:.2f}")
+
+# Plota Gráfico e Ajusta Visual
+fig_int, ax_int = plt.subplots(figsize=(12, 3))
+sns.barplot(data=df, x=x_var, y=y_var, hue=color_var, ax=ax_int)
+ax_int.set_title(f'{y_var} x {x_var} colorido por {color_var}')
+ax_int.set_ylabel(y_var)
+ax_int.set_xlabel(x_var)
+st.pyplot(fig_int)
 
