@@ -42,46 +42,6 @@ def create_database(db_path='farm_data.db'):
         )
         ''')
         
-        # Tabela SENSOR_UMIDADE
-        cursor.execute('''
-        CREATE TABLE IF NOT EXISTS sensor_umidade (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            id_plantacao INTEGER NOT NULL,
-            localizacao TEXT NOT NULL,
-            FOREIGN KEY (id_plantacao) REFERENCES plantacao (id)
-        )
-        ''')
-        
-        # Tabela SENSOR_PH
-        cursor.execute('''
-        CREATE TABLE IF NOT EXISTS sensor_ph (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            id_plantacao INTEGER NOT NULL,
-            localizacao TEXT NOT NULL,
-            FOREIGN KEY (id_plantacao) REFERENCES plantacao (id)
-        )
-        ''')
-        
-        # Tabela SENSOR_P
-        cursor.execute('''
-        CREATE TABLE IF NOT EXISTS sensor_p (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            id_plantacao INTEGER NOT NULL,
-            localizacao TEXT NOT NULL,
-            FOREIGN KEY (id_plantacao) REFERENCES plantacao (id)
-        )
-        ''')
-        
-        # Tabela SENSOR_K
-        cursor.execute('''
-        CREATE TABLE IF NOT EXISTS sensor_k (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            id_plantacao INTEGER NOT NULL,
-            localizacao TEXT NOT NULL,
-            FOREIGN KEY (id_plantacao) REFERENCES plantacao (id)
-        )
-        ''')
-        
         # Tabela BOMBA
         cursor.execute('''
         CREATE TABLE IF NOT EXISTS bomba (
@@ -104,6 +64,7 @@ def create_database(db_path='farm_data.db'):
             potassio BOOLEAN NOT NULL,
             ph REAL NOT NULL,
             umidade REAL NOT NULL,
+            temperatura REAL NOT NULL,
             status_bomba BOOLEAN NOT NULL,
             FOREIGN KEY (id_plantacao) REFERENCES plantacao (id)
         )
@@ -113,10 +74,6 @@ def create_database(db_path='farm_data.db'):
         cursor.execute("INSERT INTO fazenda (nome, area_total) VALUES ('Fazenda Modelo', 100.0)")
         cursor.execute("INSERT INTO cultura (nome) VALUES ('Soja')")
         cursor.execute("INSERT INTO plantacao (id_fazenda, id_cultura, area_plantada, data_plantio) VALUES (1, 1, 50.0, '2025-01-15')")
-        cursor.execute("INSERT INTO sensor_umidade (id_plantacao, localizacao) VALUES (1, 'Setor A')")
-        cursor.execute("INSERT INTO sensor_ph (id_plantacao, localizacao) VALUES (1, 'Setor A')")
-        cursor.execute("INSERT INTO sensor_p (id_plantacao, localizacao) VALUES (1, 'Setor A')")
-        cursor.execute("INSERT INTO sensor_k (id_plantacao, localizacao) VALUES (1, 'Setor A')")
         cursor.execute("INSERT INTO bomba (id_plantacao, localizacao, status_atual, data_hora_ultimo_status) VALUES (1, 'Setor A', 0, '2025-05-18 10:00:00')")
         
         print("Banco de dados criado com sucesso!")

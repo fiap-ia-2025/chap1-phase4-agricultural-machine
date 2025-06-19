@@ -30,6 +30,7 @@ void setup() {
   dht.begin();
   lcd.init();
   lcd.backlight();
+
   Serial.println("Sistema de Irrigação Inicializado");
 }
 
@@ -71,20 +72,28 @@ void loop() {
 
     digitalWrite(RELAY_PIN, shouldIrrigate ? HIGH : LOW);
 
-    // Exibe informações no Serial Monitor
+    // Exibe informações no Serial Monitor 
+    /*
     Serial.print("Umi: ");
     Serial.print((uint8_t)humidity); // uint8_t suficiente para 0-100%
     Serial.print("% pH: ");
     Serial.print(phSimulated, 1);
     Serial.print(" Temp: ");
     Serial.print((uint8_t)temperature);
-    Serial.print("C ");
     Serial.print(" P: ");
     Serial.print(phosphorusStatus);
     Serial.print(" K: ");
     Serial.print(potassiumStatus);
     Serial.print(" B: ");
-    Serial.println(shouldIrrigate ? "1" : "0");    
+    Serial.println(shouldIrrigate ? "1" : "0"); */
+    
+    // Exibe informações no Serial Monitor em formato CSV
+    Serial.print(humidity, 1); Serial.print(",");
+    Serial.print(phSimulated, 2); Serial.print(",");
+    Serial.print(temperature, 1); Serial.print(",");
+    Serial.print(phosphorusStatus); Serial.print(",");
+    Serial.print(potassiumStatus); Serial.print(",");
+    Serial.println(shouldIrrigate ? "1" : "0");
 
     // Exibe informações no LCD
     lcd.clear();
@@ -103,6 +112,7 @@ void loop() {
     lcd.print(potassiumStatus);
     lcd.print(" B:");
     lcd.print(shouldIrrigate ? '1' : '0');
+
   }
   delay(100); // Pequeno atraso para evitar sobrecarga do loop
 }
