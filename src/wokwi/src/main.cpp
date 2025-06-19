@@ -15,98 +15,86 @@ DHT dht(HUMIDITY_SENSOR_PIN, DHTTYPE);
 // LCD I2C: endereço 0x27, 16 colunas, 2 linhas
 LiquidCrystal_I2C lcd(0x27, 16, 2);
 
-unsigned long lastUpdate = 0; // Variável para controlar o tempo de atualização do LCD
-uint32_t interval = 500; // Intervalo de atualização do LCD em milissegundos
+// Otimização: intervalos pequenos podem ser uint16_t (até 65535 ms)
+unsigned long lastUpdate = 0; // Mantém unsigned long para millis()
+const uint16_t interval = 500; // Intervalo de atualização do LCD em milissegundos
 
 void setup() {
-  Serial.begin(115200);  // inicia comunicação com o monitor serial
+  Serial.begin(115200);
 
-  // Configura botões com resistência interna pull-up (pressionado = LOW = nutriente ausente)
   pinMode(PHOSPHORUS_BUTTON_PIN, INPUT_PULLUP);
   pinMode(POTASSIUM_BUTTON_PIN, INPUT_PULLUP);
-
-  // Configura relé (LED) como saída
   pinMode(RELAY_PIN, OUTPUT);
-  digitalWrite(RELAY_PIN, LOW);  // bomba começa desligada
+  digitalWrite(RELAY_PIN, LOW);
 
-  // Inicializa o sensor de umidade
-  dht.begin(); 
-
-  // Inicializa o LCD
+  dht.begin();
   lcd.init();
   lcd.backlight();
   Serial.println("Sistema de Irrigação Inicializado");
 }
 
 void loop() {
-
-  // Atualiza o LCD a cada intervalo definido
   unsigned long currentMillis = millis();
-  
-  // Verifica se o tempo atual menos o tempo da última atualização é maior ou igual ao intervalo
-  // Se for, atualiza o LCD e lê os sensores
-  // Isso evita que o LCD seja atualizado a cada iteração do loop, economizando recursos
-  // e permitindo que o sistema responda a outras tarefas, como leituras de sensores e
-  // acionamento de atuadores, sem atrasos significativos.
-  // Isso também garante que o LCD seja atualizado em intervalos regulares, conforme definido pela
-  if (currentMillis - lastUpdate >= interval) {
-    lastUpdate = currentMillis; // Atualiza o tempo da última atualização do LCD  
 
-    // Leitura dos botões (pressionado = nutriente ausente)
+  // Verifica se o intervalo de atualização foi atingido
+  // Otimização: evita cálculos desnecessários se o intervalo não foi atingido
+  // Isso reduz a carga no loop principal, especialmente em sistemas com recursos limitados
+  // e melhora a responsividade do sistema.
+  // A verificação de tempo é feita apenas uma vez por iteração do loop
+  // para evitar múltiplas leituras de sensores e atualizações de LCD desnecessárias
+  if (currentMillis - lastUpdate >= interval) {
+    lastUpdate = currentMillis;
+
+    // Otimização: bool ocupa 1 byte, ideal para flags
     bool phosphorusAbsent = digitalRead(PHOSPHORUS_BUTTON_PIN) == LOW;
     bool potassiumAbsent  = digitalRead(POTASSIUM_BUTTON_PIN) == LOW;
 
-    // Leitura do valor do LDR para simular pH (0 a 14)
-    int phRaw = analogRead(PH_SENSOR_PIN);
-    float phSimulated = (phRaw / 4095.0) * 14.0;
+    // Otimização: int16_t suficiente para analogRead (0-4095)
+    int16_t phRaw = analogRead(PH_SENSOR_PIN);
 
-    // Leitura da umidade (%)
+    float phSimulated = (phRaw / 4095.0f) * 14.0f;
     float humidity = dht.readHumidity();
 
-    // Verifica se a leitura de umidade falhou
     if (isnan(humidity)) {
       Serial.println("Falha ao ler umidade!");
-      humidity = 0;  // Define umidade como 0 em caso de falha
+      humidity = 0.0f;
     }
 
-    // Mostra informações no monitor serial
-    Serial.print("P=");
-    Serial.print(phosphorusAbsent ? "Ausente" : "Presente");
-    Serial.print(", K=");
-    Serial.print(potassiumAbsent ? "Ausente" : "Presente");
-    Serial.print(", Umidade=");
-    Serial.print(humidity);
-    Serial.print("%, pH=");
-    Serial.print(phSimulated, 1);
+    // Otimização: char para status simples
+    char phosphorusStatus = phosphorusAbsent ? 'A' : 'P';
+    char potassiumStatus  = potassiumAbsent  ? 'A' : 'P';
 
-    // Aciona bomba somente se umidade estiver abaixo de 40%, 1 = Ligada e 0 = Desligada
-    bool shouldIrrigate = humidity < 40;
+    // Otimização: bool para status da bomba
+    bool shouldIrrigate = humidity < 40.0f;
 
     digitalWrite(RELAY_PIN, shouldIrrigate ? HIGH : LOW);
 
-    if (shouldIrrigate) {
-      Serial.println(", Bomba=1");
-    } else {
-      Serial.println(", Bomba=0");
-    }
+    Serial.print("P=");
+    Serial.print(phosphorusStatus == 'A' ? "Ausente" : "Presente");
+    Serial.print(", K=");
+    Serial.print(potassiumStatus == 'A' ? "Ausente" : "Presente");
+    Serial.print(", Umidade=");
+    Serial.print(humidity, 1);
+    Serial.print("%, pH=");
+    Serial.print(phSimulated, 1);
+    Serial.print(", Bomba=");
+    Serial.println(shouldIrrigate ? "1" : "0");
 
     // Exibe informações no LCD
     lcd.clear();
     lcd.setCursor(0, 0);
     lcd.print("Umi:");
-    lcd.print(humidity, 1);
+    lcd.print((uint8_t)humidity); // uint8_t suficiente para 0-100%
     lcd.print("% pH:");
     lcd.print(phSimulated, 1);
 
     lcd.setCursor(0, 1);
     lcd.print("P:");
-    lcd.print(phosphorusAbsent ? "A" : "P");
+    lcd.print(phosphorusStatus);
     lcd.print(" K:");
-    lcd.print(potassiumAbsent ? "A" : "P");
+    lcd.print(potassiumStatus);
     lcd.print(" B:");
-    lcd.print(shouldIrrigate ? "1" : "0");
-
-  } // Fim da atualização do LCD
-  // Aguarda um pouco antes da próxima iteração do loop
+    lcd.print(shouldIrrigate ? '1' : '0');
+  }
   delay(100); // Pequeno atraso para evitar sobrecarga do loop
 }
