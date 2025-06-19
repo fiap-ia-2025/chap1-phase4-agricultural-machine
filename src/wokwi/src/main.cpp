@@ -69,16 +69,17 @@ void loop() {
 
     digitalWrite(RELAY_PIN, shouldIrrigate ? HIGH : LOW);
 
-    Serial.print("P=");
-    Serial.print(phosphorusStatus == 'A' ? "Ausente" : "Presente");
-    Serial.print(", K=");
-    Serial.print(potassiumStatus == 'A' ? "Ausente" : "Presente");
-    Serial.print(", Umidade=");
-    Serial.print(humidity, 1);
-    Serial.print("%, pH=");
+    // Exibe informações no Serial Monitor
+    Serial.print("Umi: ");
+    Serial.print((uint8_t)humidity); // uint8_t suficiente para 0-100%
+    Serial.print("% pH: ");
     Serial.print(phSimulated, 1);
-    Serial.print(", Bomba=");
-    Serial.println(shouldIrrigate ? "1" : "0");
+    Serial.print(" P: ");
+    Serial.print(phosphorusStatus);
+    Serial.print(" K: ");
+    Serial.print(potassiumStatus);
+    Serial.print(" B: ");
+    Serial.println(shouldIrrigate ? "1 (Irrigando)" : "0 (Parado)");    
 
     // Exibe informações no LCD
     lcd.clear();

@@ -82,6 +82,7 @@ Esta etapa foca na construção de um sistema físico/simulado de irrigação ba
 - A leitura do pH é feita com um LDR analógico e normalizada para a escala 0 a 14 apenas para exibição informativa.
 - Os botões simulam a ausência dos nutrientes fósforo e potássio, mas **não afetam diretamente a lógica de irrigação**.
 - O LED conectado ao GPIO2 representa visualmente o estado da bomba d’água (ligado = irrigando).
+- O LCD exibe as informações monitoradas diretamente ao sistema físico.
 
 ### Tecnologias utilizadas:
 
@@ -93,6 +94,38 @@ Esta etapa foca na construção de um sistema físico/simulado de irrigação ba
 ### Diagrama do Circuito:
 
 <img src="assets/circuito_diagrama.png" alt="Diagrama" border="0" width="40%" height="40%">
+
+<br>
+
+### Otimizações de Memória
+
+O código foi revisado para otimizar o uso de memória RAM no ESP32, garantindo maior eficiência e estabilidade. As principais otimizações realizadas foram:
+
+- **Uso de tipos inteiros menores:**  
+  - `interval` definido como `const uint16_t`, suficiente para intervalos de até 65 segundos.
+  - `phRaw` definido como `int16_t`, pois o valor de `analogRead` vai de 0 a 4095.
+- **Uso de `bool` para flags:**  
+  - Variáveis como `phosphorusAbsent`, `potassiumAbsent` e `shouldIrrigate` usam o tipo `bool`, que ocupa apenas 1 byte.
+- **Uso de `char` para status simples:**  
+  - Status de nutrientes (`phosphorusStatus`, `potassiumStatus`) são representados por caracteres (`'A'` para ausente, `'P'` para presente), economizando memória em relação a strings.
+- **Uso de `float` apenas onde necessário:**  
+  - Mantido para cálculos de pH e umidade, pois sensores analógicos requerem precisão decimal.
+- **Conversão para tipos menores na exibição:**  
+  - Ao exibir a umidade no LCD, é feito cast para `uint8_t`, já que o valor está sempre entre 0 e 100.
+
+Essas otimizações tornam o código mais eficiente, especialmente em aplicações embarcadas onde o uso de memória é crítico.
+
+## Serial Plotter
+
+O projeto pode ser utilizado com o **Serial Plotter** do VS Code ou Arduino IDE para visualização gráfica em tempo real das principais variáveis do sistema, como umidade, pH e status da bomba de irrigação.
+
+- Para usar o Serial Plotter, basta abrir o monitor serial no modo plotter após iniciar o projeto.
+- Os dados enviados pelo código incluem informações de umidade, pH e status da bomba, permitindo acompanhar graficamente o comportamento do sistema ao longo do tempo.
+- Cada variável pode ser visualizada em uma linha separada no gráfico, facilitando a análise e o ajuste dos parâmetros do sistema.
+
+<br>
+
+<img src="assets/serial_plotter.png" alt="Diagrama" border="0" width="60%" height="60%">
 
 <br>
 
