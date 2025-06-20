@@ -260,6 +260,9 @@ def generate_statistics(conn):
         AVG(umidade) as umidade_media,
         MIN(umidade) as umidade_min,
         MAX(umidade) as umidade_max,
+        AVG(temperatura) as temperature_media,
+        MIN(temperatura) as temperature_min,
+        MAX(temperatura) as temperature_max,
         SUM(CASE WHEN fosforo = 1 THEN 1 ELSE 0 END) as fosforo_presente,
         SUM(CASE WHEN potassio = 1 THEN 1 ELSE 0 END) as potassio_presente,
         SUM(CASE WHEN status_bomba = 1 THEN 1 ELSE 0 END) as bomba_ativa
@@ -287,6 +290,11 @@ def generate_statistics(conn):
     print(f"Média: {stats['umidade_media']:.2f}%")
     print(f"Mínimo: {stats['umidade_min']:.2f}%")
     print(f"Máximo: {stats['umidade_max']:.2f}%")
+
+    print("\n=== Estatísticas de Temperatura ===")
+    print(f"Média: {stats['temperature_media']:.2f}°C") 
+    print(f"Mínimo: {stats['temperature_min']:.2f}°C")
+    print(f"Máximo: {stats['temperature_max']:.2f}°C")
     
     print("\n=== Estatísticas de Nutrientes ===")
     print(f"Leituras com Fósforo presente: {stats['fosforo_presente']} ({stats['fosforo_presente']/stats['total_leituras']*100:.1f}%)")

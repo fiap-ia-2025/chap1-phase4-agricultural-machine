@@ -1,2 +1,2 @@
-P=Ausente, K=Presente, Umidade=73.70%, pH=3.9, Bomba=0
+P=Ausente, K=Presente, Umidade=73.70%, pH=3.9, Bomba=1, Temperature=25.0
 

@@ -19,6 +19,7 @@ def parse_sensor_data(line: str) -> dict:
     umidade_match= re.search(r'Umidade=(\d+\.\d+|\d+)%', line, re.I)
     ph_match     = re.search(r'pH=(\d+\.\d+|\d+)', line, re.I)
     bomba_match  = re.search(r'Bomba=(\d+|True|False)', line, re.I)
+    temperatura_match = re.search(r'Temperatura=(\d+\.\d+|\d+)', line, re.I)
 
     # P e K: “Presente” → True; número > 0 → True; caso contrário False
     def presente_ou_num(match):
@@ -33,6 +34,8 @@ def parse_sensor_data(line: str) -> dict:
     k_value = presente_ou_num(k_match)
     umidade = float(umidade_match.group(1)) if umidade_match else 0.0
     ph      = float(ph_match.group(1))      if ph_match      else 7.0
+    temperatura      = float(temperatura_match.group(1))      if temperatura_match      else 30.0
+
 
     bomba_str = bomba_match.group(1) if bomba_match else "0"
     bomba = {'true': True, 'false': False}.get(bomba_str.lower(), bool(int(bomba_str)))
@@ -42,6 +45,7 @@ def parse_sensor_data(line: str) -> dict:
         'potassio':     k_value,
         'umidade':      umidade,
         'ph':           ph,
+        'temperatura':  temperatura,
         'status_bomba': bomba,
         'timestamp':    datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
     }
@@ -63,8 +67,8 @@ def insert_sensor_reading(conn, id_plantacao, data):
     
     cursor.execute('''
     INSERT INTO leitura_sensor (
-        id_plantacao, timestamp, fosforo, potassio, ph, umidade, status_bomba
-    ) VALUES (?, ?, ?, ?, ?, ?, ?)
+        id_plantacao, timestamp, fosforo, potassio, ph, umidade, temperatura, status_bomba
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
     ''', (
         id_plantacao,
         data['timestamp'],
@@ -72,6 +76,7 @@ def insert_sensor_reading(conn, id_plantacao, data):
         data['potassio'],
         data['ph'],
         data['umidade'],
+        data['temperatura'],
         data['status_bomba']
     ))
     
@@ -137,6 +142,7 @@ def update_sensor_reading(conn, reading_id, data):
                potassio     = :potassio,
                ph           = :ph,
                umidade      = :umidade,
+                temperatura  = :temperatura,
                status_bomba = :status_bomba
          WHERE id = :reading_id
         """,

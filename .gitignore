@@ -5,6 +5,6 @@
 .n__pycache__
 .n*.pyc
 .n.DS_Store
-.__pycache__/
+src/application/__pycache__/
 .vscode
 documents/.ipynb_checkpoints/
