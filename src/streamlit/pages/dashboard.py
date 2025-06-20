@@ -6,7 +6,7 @@ import sqlite3
 import datetime
 # Importa bibliotecas necessárias
 
-arquivo = 'farm_data.db'
+arquivo = "/Users/amanda/Documents/FIAP/projetos/chap1-phase4-agricultural-machine/src/application/farm_data.db"
 conn = sqlite3.connect(arquivo)
 query = "SELECT * FROM leitura_sensor"
 df = pd.read_sql_query(query, conn)

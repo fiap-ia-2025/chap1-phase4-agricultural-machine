@@ -10,7 +10,7 @@ st.markdown(
 
 # Conexão com Base de dados
 st.header('Conexão com Base de dados')
-arquivo = 'farm_data.db'
+arquivo = "/Users/amanda/Documents/FIAP/projetos/chap1-phase4-agricultural-machine/src/application/farm_data.db"
 conn = sqlite3.connect(arquivo)
 query = "SELECT * FROM leitura_sensor"
 df = pd.read_sql_query(query, conn)
