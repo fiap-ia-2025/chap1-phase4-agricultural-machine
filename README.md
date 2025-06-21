@@ -70,7 +70,7 @@ Seguem abaixo mais detalhes sobre cada tópico evoluído no projeto.
 
 <br>
 
-## Código C++ otimizado
+## 🔖 Código C++ otimizado
 
 O código foi revisado para otimizar o uso de memória RAM no ESP32, garantindo maior eficiência e estabilidade. As principais otimizações realizadas foram:
 
@@ -90,7 +90,7 @@ Essas otimizações tornam o código mais eficiente, especialmente em aplicaçõ
 
 <br>
 
-## Banco de dados aprimorado
+## ✨ Banco de dados aprimorado
 
 O banco de dados foi modificado para manter apenas o que de fato está sendo utilizado no projeto e incluir informações relevantes, como:
 
@@ -100,7 +100,7 @@ O banco de dados foi modificado para manter apenas o que de fato está sendo uti
 
 <br>
 
-## Modelagem preditiva com Scikit-learn
+## 📇 Modelagem preditiva com Scikit-learn
 
 A modelagem preditiva foi desenvolvida no arquivo `machine_learning.ipynb`, utilizando a biblioteca Scikit-learn para criar um modelo de classificação capaz de prever a necessidade de irrigação com base nos dados coletados pelos sensores.
 
@@ -139,7 +139,7 @@ Após treinar e avaliar o modelo de Decision Tree com boa acurácia, utilizamos 
 
 <br>
 
-## Interface com Streamlit
+## 💡 Interface com Streamlit
 
 A interface desenvolvida com **Streamlit** tem como objetivo proporcionar uma visualização clara, interativa e acessível dos dados coletados pelo sistema de irrigação inteligente. Ela permite que usuários acompanhem o desempenho do sistema, analisem tendências e tomem decisões informadas sobre a irrigação.
 
@@ -202,7 +202,7 @@ Além do dashboard de visualização, o projeto conta com uma interface Streamli
 
 <br>
 
-## Integração Serial Plotter
+## 🚀 Integração Serial Plotter
 
 O projeto pode ser utilizado com o **Serial Plotter** do VS Code ou Arduino IDE para visualização gráfica em tempo real das principais variáveis do sistema, como umidade, pH e status da bomba de irrigação.
 
@@ -216,7 +216,7 @@ O projeto pode ser utilizado com o **Serial Plotter** do VS Code ou Arduino IDE 
 
 <br>
 
-## Inclusão do display LCD no Wokwi
+## 📈 Inclusão do display LCD no Wokwi
 
 <p align="center">
   <img src="assets/circuito_diagrama.png" alt="Wokwi" width="80%">
