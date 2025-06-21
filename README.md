@@ -33,7 +33,7 @@
 
 ### 🎥 Assista à demonstração no YouTube
 
-[![Assista à demonstração no YouTube](https://img.youtube.com/vi/kO4M81SsNnA/0.jpg)](https://youtu.be/kO4M81SsNnA)
+[![Assista à demonstração no YouTube](https://img.youtube.com/vi/bu8EwQcKOZQ/0.jpg)](https://www.youtube.com/watch?v=bu8EwQcKOZQ)
 
 
 ## 📘 Descrição Geral
@@ -44,23 +44,23 @@ Esse projeto é uma extensão do projeto já desenvolvido no repositório[chap1-
 
 As otimizações realizadas foram:
 
-1. **Código C++ otimizado**  
-   Foram realizadas várias otimizações no código C++ do projeto wokwi. Cada otimização realizada por ser identificada no código pelos comentários inseridos.
+1. **Código C++ otimizado:**  
+Foram realizadas várias otimizações no código C++ do projeto wokwi. Cada otimização realizada por ser identificada no código pelos comentários inseridos.
 
-2. **Banco de dados aprimorado**  
-   Entidades não utilizadas foram removidas e novas colunas adicionadas.
+2. **Banco de dados aprimorado:**  
+Entidades não utilizadas foram removidas e novas colunas adicionadas.
 
 3. **Modelagem preditiva com Scikit-learn**
-  Foi criada uma modelagem supervisionada utilizando algorítimos de classificação da biblioteca scikit-learn.
+Foi criada uma modelagem supervisionada utilizando algorítimos de classificação da biblioteca scikit-learn.
 
-4. **Interface com Streamlit**
-  Foram criadas interfaces para representar graficamente os dados inseridos na base de dados e criar uma interação com a modelagem preditiva.
+4. **Interface com Streamlit:**
+Foram criadas interfaces para representar graficamente os dados inseridos na base de dados e criar uma interação com a modelagem preditiva.
 
-4. **Integração do Serial Plotter**
-  O Seal Plotter foi utilizado na silumação com wokwi para printar as informações coletadas dos sensores, assim como exibi-las graficamente.
+4. **Integração do Serial Plotter:**
+O Serial Plotter foi utilizado na silumação com wokwi para printar as informações coletadas dos sensores, assim como exibi-las graficamente.
 
-5. **Inclusão do display LCD no Wokwi**
-  Foi incluído um display LCD na simulação wokwi para exibir as informações coletadas diretamente no sistema físico.
+5. **Inclusão do display LCD no Wokwi:**
+Foi incluído um display LCD na simulação wokwi para exibir as informações coletadas diretamente no sistema físico.
 
 <br>
 

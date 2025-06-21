@@ -30,7 +30,6 @@ if len(date_range) == 2:
 
 # Botão para atualizar dados em tempo real
 if st.button("🔄 Atualizar Dados"):
-    conn = sqlite3.connect("farm_data.db")
     df = pd.read_sql_query("SELECT * FROM leitura_sensor", conn)
     conn.close()
     st.rerun()
