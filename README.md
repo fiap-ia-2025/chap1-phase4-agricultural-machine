@@ -50,7 +50,7 @@ Foram realizadas várias otimizações no código C++ do projeto wokwi. Cada oti
 2. **Banco de dados aprimorado:**  
 Entidades não utilizadas foram removidas e novas colunas adicionadas.
 
-3. **Modelagem preditiva com Scikit-learn**
+3. **Modelagem preditiva com Scikit-learn:**
 Foi criada uma modelagem supervisionada utilizando algorítimos de classificação da biblioteca scikit-learn.
 
 4. **Interface com Streamlit:**
