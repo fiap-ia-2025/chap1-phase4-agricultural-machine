@@ -40,64 +40,37 @@
 
 Este projeto faz parte de uma solução integrada de **irrigação inteligente com ESP32**, desenvolvida como atividade prática no curso de Inteligência Artificial da FIAP. Seu principal objetivo é aplicar conceitos de **automação agrícola**, **monitoramento ambiental**, **programação embarcada** e **persistência de dados**, simulando um cenário real de controle e otimização do uso da água em plantações.
 
-A atividade foi dividida em duas frentes complementares:
+Esse projeto é uma extensão do projeto já desenvolvido no repositório[chap1-phase3-agricultural-machine](https://github.com/fiap-ia-2025/chap1-phase3-agricultural-machine), com objetivo de otimização.
 
-1. **Entrega 1 — Monitoramento físico e lógica de irrigação com ESP32**  
-   Foco na criação do sistema físico (simulado via Wokwi), que coleta dados do solo e aciona a irrigação automaticamente quando necessário.
+As otimizações realizadas foram:
 
-2. **Entrega 2 — Armazenamento, CRUD e API climática e Dashboard em Python**  
-   Foco na manipulação dos dados coletados, integração com uma API pública de clima e visualização gráfica dos dados.
+1. **Código C++ otimizado**  
+   Foram realizadas várias otimizações no código C++ do projeto wokwi. Cada otimização realizada por ser identificada no código pelos comentários inseridos.
 
-<br>
+2. **Banco de dados aprimorado**  
+   Entidades não utilizadas foram removidas e novas colunas adicionadas.
 
-## 🎯 Objetivo Geral
+3. **Modelagem preditiva com Scikit-learn**
+  Foi criada uma modelagem supervisionada utilizando algorítimos de classificação da biblioteca scikit-learn.
 
-Construir uma solução digital de irrigação que seja:
+4. **Interface com Streamlit**
+  Foram criadas interfaces para representar graficamente os dados inseridos na base de dados e criar uma interação com a modelagem preditiva.
 
-- Sensível às condições reais do solo e clima
-- Capaz de tomar decisões autônomas sobre irrigação
-- Preparada para armazenar e visualizar dados históricos
-- Inteligente o suficiente para considerar informações externas (como previsão de chuva) e fazer recomendações
-- Fácil de interpretar visualmente através de um dashboard interativo
+4. **Integração do Serial Plotter**
+  O Seal Plotter foi utilizado na silumação com wokwi para printar as informações coletadas dos sensores, assim como exibi-las graficamente.
 
-<br>
-
-## 🔧 Entrega 1 — Monitoramento Físico e Lógica de Controle com ESP32
-
-Esta etapa foca na construção de um sistema físico/simulado de irrigação baseado em sensores e lógica embarcada com ESP32, utilizando a IDE VS Code, PlatformIO e a extensão do Wokwi.
-
-### Variáveis monitoradas:
-
-| Variável             | Simulação/Componente                        |
-| -------------------- | ------------------------------------------- |
-| Umidade do solo      | Sensor DHT22                                |
-| pH do solo           | Sensor LDR (com conversão para escala 0–14) |
-| Presença de fósforo  | Botão com `INPUT_PULLUP`                    |
-| Presença de potássio | Botão com `INPUT_PULLUP`                    |
-| Bomba de irrigação   | LED (simula relé e bomba d’água)            |
-
-### Lógica implementada:
-
-- A bomba de irrigação é acionada **somente quando a umidade do solo está abaixo de 40%**.
-- A leitura do pH é feita com um LDR analógico e normalizada para a escala 0 a 14 apenas para exibição informativa.
-- Os botões simulam a ausência dos nutrientes fósforo e potássio, mas **não afetam diretamente a lógica de irrigação**.
-- O LED conectado ao GPIO2 representa visualmente o estado da bomba d’água (ligado = irrigando).
-- O LCD exibe as informações monitoradas diretamente ao sistema físico.
-
-### Tecnologias utilizadas:
-
-- **ESP32 Dev Module** como microcontrolador
-- **PlatformIO** com VS Code para desenvolvimento estruturado em C++
-- **Wokwi Extension** para simulação do circuito (`diagram.json`) diretamente dentro do VS Code
-- **Biblioteca `DHT` da Adafruit**
-
-### Diagrama do Circuito:
-
-<img src="assets/circuito_diagrama.png" alt="Diagrama" border="0" width="40%" height="40%">
+5. **Inclusão do display LCD no Wokwi**
+  Foi incluído um display LCD na simulação wokwi para exibir as informações coletadas diretamente no sistema físico.
 
 <br>
 
-### Otimizações de Memória
+Além dos tópicos abordados acima, o projeto também foi restruturado para se adequar ao template padrão de projetos.
+
+Seguem abaixo mais detalhes sobre cada tópico evoluído no projeto.
+
+<br>
+
+## Código C++ otimizado
 
 O código foi revisado para otimizar o uso de memória RAM no ESP32, garantindo maior eficiência e estabilidade. As principais otimizações realizadas foram:
 
@@ -115,7 +88,121 @@ O código foi revisado para otimizar o uso de memória RAM no ESP32, garantindo 
 
 Essas otimizações tornam o código mais eficiente, especialmente em aplicações embarcadas onde o uso de memória é crítico.
 
-## Serial Plotter
+<br>
+
+## Banco de dados aprimorado
+
+O banco de dados foi modificado para manter apenas o que de fato está sendo utilizado no projeto e incluir informações relevantes, como:
+
+* Remoção das tabelas **sensor_umidade**, **sensor_ph**, **sensor_p** e **sensor_k** pois não estavam sendo utlizadas no projeto, apenas eram criadas mas sem utilidade.
+
+* Inclusão da coluna **temperatura** na tabela **leitura_sensor**, pois a temperatura é um dado importante e utilizado no simulação wokwi.
+
+<br>
+
+## Modelagem preditiva com Scikit-learn
+
+A modelagem preditiva foi desenvolvida no arquivo `machine_learning.ipynb`, utilizando a biblioteca Scikit-learn para criar um modelo de classificação capaz de prever a necessidade de irrigação com base nos dados coletados pelos sensores.
+
+### 1. Objetivo
+
+O objetivo principal da modelagem é prever automaticamente se a bomba de irrigação deve ser acionada, considerando variáveis como umidade do solo, pH, presença de fósforo e potássio, além da temperatura.
+
+### 2. Pipeline de Machine Learning
+
+O processo de modelagem seguiu as seguintes etapas:
+
+- **Coleta e preparação dos dados:**  
+  Os dados foram extraídos da simulação wokwi e carregados em um DataFrame do Pandas. Foram selecionadas as colunas relevantes e tratados valores ausentes.
+
+- **Engenharia de atributos:**  
+  Variáveis categóricas (como presença de fósforo e potássio) foram convertidas para valores numéricos. A variável alvo foi definida como o status da bomba (`bomba`).
+
+- **Divisão dos dados:**  
+  Os dados foram divididos em conjuntos de treino e teste (80%/20%) para validação do modelo.
+
+- **Treinamento do modelo:**  
+  Foram testados diferentes algoritmos de classificação, como `RandomForestClassifier`, `DecisionTreeClassifier` e `LogisticRegression`. O modelo com melhor desempenho foi selecionado com base na acurácia.
+
+- **Avaliação:**  
+  O modelo foi avaliado utilizando métricas como acurácia. Os resultados mostraram boa capacidade de generalização para o problema proposto.
+
+### 3. Resultados
+
+O modelo apresentou alta acurácia na predição do acionamento da bomba, indicando que as variáveis coletadas são suficientes para automatizar a decisão de irrigação. Isso permite que o sistema recomende ou acione a irrigação de forma inteligente, reduzindo desperdícios e otimizando o uso da água.
+
+O notebook completo com código, gráficos e análises está disponível no arquivo `machine_learning.ipynb`.
+
+### 4. Exportação do Modelo com Joblib
+
+Após treinar e avaliar o modelo de Decision Tree com boa acurácia, utilizamos a biblioteca `joblib` para exportar o modelo treinado. Isso permite reutilizar o modelo em outros scripts ou aplicações sem a necessidade de re-treinamento.
+
+<br>
+
+## Interface com Streamlit
+
+A interface desenvolvida com **Streamlit** tem como objetivo proporcionar uma visualização clara, interativa e acessível dos dados coletados pelo sistema de irrigação inteligente. Ela permite que usuários acompanhem o desempenho do sistema, analisem tendências e tomem decisões informadas sobre a irrigação.
+
+### Principais Funcionalidades
+
+- **Dashboard Interativo:**  
+  Exibe gráficos em tempo real com os dados armazenados no banco SQLite, facilitando a análise visual dos principais indicadores agrícolas.
+
+- **Visualização de Umidade do Solo:**  
+  Gráfico de linha mostrando a evolução da umidade ao longo do tempo, com marcação dos momentos em que a bomba de irrigação foi acionada.
+
+- **Monitoramento do pH do Solo:**  
+  Gráfico de linha com faixa indicativa do intervalo ideal de pH, permitindo identificar rapidamente desvios e necessidade de correção.
+
+<p align="center">
+  <img src="assets/streamlit_dash1.png" alt="Dashboard Streamlit" width="80%">
+</p>
+
+- **Status dos Nutrientes (Fósforo e Potássio):**  
+  Gráficos de barras binários (presente/ausente) para fósforo e potássio, facilitando o acompanhamento da disponibilidade desses nutrientes no solo.
+
+<p align="center">
+  <img src="assets/streamlit_dash2.png" alt="Dashboard Streamlit" width="80%">
+</p>
+
+- **Filtros e Seleção de Período:**  
+  Possibilidade de filtrar os dados por intervalo de datas, permitindo análises específicas por período.
+
+<p align="center">
+  <img src="assets/streamlit_dash4.png" alt="Dashboard Streamlit" width="80%">
+</p>
+
+- **Resumo Estatístico:**  
+  Exibe estatísticas resumidas, como médias, máximos e mínimos dos principais parâmetros monitorados.
+
+<p align="center">
+  <img src="assets/streamlit_dash3.png" alt="Dashboard Streamlit" width="80%">
+</p>
+
+
+Além do dashboard de visualização, o projeto conta com uma interface Streamlit dedicada ao arquivo `machine_learning.py`, que permite ao usuário interagir diretamente com o modelo preditivo treinado.
+
+### Funcionalidades da Interface
+
+- **Previsão de Irrigação:**  
+  O usuário pode inserir manualmente valores para umidade do solo, pH, temperatura, presença de fósforo e potássio. Com base nesses dados, a interface utiliza o modelo treinado para prever se a bomba de irrigação deve ser acionada.
+
+- **Formulário Interativo:**  
+  Campos deslizantes e seletores facilitam a entrada dos dados dos sensores, tornando o teste do modelo acessível mesmo para quem não tem experiência em programação.
+
+- **Exibição do Resultado:**  
+  Após o envio dos dados, a interface exibe de forma clara se a irrigação é recomendada ou não, com base na predição do modelo.
+
+- **Explicação dos Parâmetros:**  
+  A interface inclui descrições breves sobre cada parâmetro de entrada, ajudando o usuário a entender o impacto de cada variável na decisão do sistema.
+
+<p align="center">
+  <img src="assets/streamlit_machine_learning.png" alt="Machine Learning Streamlit" width="80%">
+</p>
+
+<br>
+
+## Integração Serial Plotter
 
 O projeto pode ser utilizado com o **Serial Plotter** do VS Code ou Arduino IDE para visualização gráfica em tempo real das principais variáveis do sistema, como umidade, pH e status da bomba de irrigação.
 
@@ -129,275 +216,64 @@ O projeto pode ser utilizado com o **Serial Plotter** do VS Code ou Arduino IDE 
 
 <br>
 
-## 💾 Entrega 2 — Armazenamento de Dados, CRUD e Integração com API Climática 
+## Inclusão do display LCD no Wokwi
 
-Nesta segunda fase do projeto, a equipe complementa a solução com uma camada de **persistência e inteligência contextual**, que envolve:
+<p align="center">
+  <img src="assets/circuito_diagrama.png" alt="Wokwi" width="80%">
+</p>
 
-- Captura dos dados exibidos no monitor serial (simulando a coleta real de dados ambientais)
-- **Armazenamento local em banco de dados relacional** simulado com Python e SQLite
-- Implementação das operações **CRUD** (Create, Read, Update, Delete) sobre as leituras
-- Integração com uma **API pública de clima** (OpenWeather), permitindo enriquecer a lógica de irrigação com base em condições externas (ex: se vai chover, a irrigação pode ser adiada)
-- Visualização por meio de **dashboard em Python** com bibliotecas como `matplotlib`, `streamlit` e `seaborn`, trazendo clareza para o usuário final sobre o comportamento do sistema
 
-<br>
+O display LCD foi adicionado ao circuito simulado no Wokwi para proporcionar uma visualização em tempo real dos principais dados coletados pelo sistema embarcado. Com essa inclusão, é possível exibir diretamente no hardware simulado informações como umidade do solo, valor de pH, status da bomba de irrigação e presença de nutrientes (fósforo e potássio).
 
-## 📊 Ajustes na Modelagem do Banco de Dados
+A integração do LCD permite:
 
-Antes de detalharmos a implementação atual do CRUD, é fundamental destacar as mudanças na modelagem de dados em relação ao **MER da Fase 2** (Capítulo 1 - "Um Mapa do Tesouro").
+- Monitorar rapidamente os valores dos sensores sem depender apenas do monitor serial.
+- Facilitar a demonstração do funcionamento do sistema em apresentações ou testes práticos.
+- Simular de forma mais fiel como seria a experiência do usuário em um dispositivo físico real.
 
-O projeto original pode ser consultado no repositório:  
-🔗 [fiap-ia-2025/chap1-phase2-database](https://github.com/fiap-ia-2025/chap1-phase2-database)
 
-| #   | O que mudou                                               | Por quê                                                                                                                                        |
-| --- | --------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
-| 1   | **Sensor de Nitrogênio removido**                         | O enunciado atual não mede N; mantivemos apenas o que realmente foi solicitado.                                                                |
-| 2   | **SENSOR_NPK ⇒ SENSOR_P + SENSOR_K**                      | P e K são botões físicos independentes (0 = ausente, 1 = presente); modelar separadamente evita campos nulos e facilita consultas.             |
-| 3   | **COLETA\*\* substituídas por LEITURA_SENSOR**            | O monitor serial entrega todos os valores juntos; uma única tabela simplifica INSERTs/SELECTs e CRUD.                                          |
-| 4   | **Entidades RECOMENDACAO, APLICACAO, PREVISAO removidas** | Escopo desta entrega = captura & CRUD das leituras; Estas entidades serão reconsideradas em etapas posteriores, conforme a expansão do escopo. |
-| 5   | **Nova entidade BOMBA**                                   | Estado on/off da bomba agora é monitorado.                                                                                                     |
-| 6   | **Tipos de dados explicitados**                           | Booleanos como INTEGER (0/1) para P, K e bomba; floats para pH e umidade, alinhados ao payload do Wokwi.                                       |
-
-<br>
-
-## 🗄️Armazenamento em banco de dados e operações CRUD
-
-No projeto atual, para guardar todas as medições do projeto nós optamos por **SQLite**, um banco de dados leve que já vem embutido no Python. Não é preciso instalar servidor nem ajustar configurações complexas — o arquivo `farm_data.db` nasce automaticamente na primeira execução e pode até ser versionado junto com o código.
-
-### 📤 Como os dados chegam ao banco
-
-Cada linha lida do monitor serial representa um **instantâneo** dos sensores (fósforo, potássio, umidade, pH e o estado da bomba). O caminho da leitura até o banco acontece em duas etapas:
-
-1. **`parse_sensor_data`**
-
-   - Limpa e interpreta o texto bruto.
-   - Converte termos como `“Presente”` em valores booleanos e porcentagens em números decimais.
-
-2. **`insert_sensor_reading`**
-   - Insere o registro na tabela `leitura_sensor`.
-   - Atualiza a tabela `bomba` com o último estado conhecido.
-
-### 🔄 Fluxo de dados — do ESP32 ao SQLite
-
-> **Copiar dados do monitor serial → Processar com Python → Armazenar em SQLite → Consultar / Atualizar / Remover via menu interativo**
-
-| Etapa                           | O que fazer                                                                                                                                                                 | Resultado                                                                   |
-| ------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------- |
-| **1. Copiar do monitor serial** | No Wokwi, copie a saída do ESP32 e cole em `sample_data.txt`. Cada linha segue o formato (exemplo):<br>`P=Presente, K=Presente, Umidade=74.50%, pH=3.4, Bomba=0`            | Arquivo-fonte pronto para importação                                        |
-| **2. Processar e armazenar**    | No menu do programa escolha **“Processar Dados de Leitura”** (opção 1). O script percorre o `sample_data.txt`, executa `parse_sensor_data` e chama `insert_sensor_reading`. | Dados persistidos no `farm_data.db`                                         |
-| **3. CRUD pelo menu**           | Ainda no mesmo menu, selecione:<br>• **Visualizar Leituras** (consulta)<br>• **Atualizar Leitura** (edição)<br>• **Excluir Leitura** (remoção)                              | Manipulação completa sem que seja necessário que o usuário final digite SQL |
-
-### 📊 Operações CRUD disponíveis
-
-| Operação                 | Função principal                                   | Observações                                                                                               |
-| ------------------------ | -------------------------------------------------- | --------------------------------------------------------------------------------------------------------- |
-| **Create (inserção)**    | `insert_sensor_reading`                            | Executada enquanto processa o arquivo individual.                                                         |
-| **Read (consulta)**      | `get_sensor_readings` e `get_sensor_reading_by_id` | Retorna listas ordenadas ou um registro detalhado.                                                        |
-| **Update (atualização)** | `update_sensor_reading`                            | Se a leitura corrigida for a mais recente da plantação, o status da bomba é sincronizado automaticamente. |
-| **Delete (exclusão)**    | `delete_sensor_reading`                            | Verifica se o ID existe antes de remover, evitando falhas silenciosas.                                    |
-
-### 💻 Interface para pessoas usuárias
-
-Todas as funções ficam por trás de um menu intuitivo no terminal (`main_menu`). Mesmo sem conhecer SQL, qualquer pessoa pode:
-
-- 📥 **Processar dados** a partir do `sample_data.txt`.
-- 🔍 **Visualizar** leituras.
-- ✏️ **Atualizar** registros.
-- 🗑️ **Excluir** entradas.
-- 📊 Gerar **Estatísticas** resumidas.
-- ⛅ Consultar **Previsão do Tempo** (via integração com API).
-
-### Outras Informações
-
-#### Sobre o Arquivo `sample_data.txt`:
-
-O código espera exatamente, em cada linha, os dados no seguinte formato (dados de exemplo):`P=Presente, K=Presente, Umidade=74.50%, pH=3.4, Bomba=0`. Além disso, ele processa apenas a primeira linha do arquivo (linha 1), mesmo que contenha múltiplas linhas. Isso garante:
-
-- **Timestamp único**: O código gera um timestamp no momento do processamento, evitando a simulação incorreta de leituras simultâneas.
-
-- **Compatibilidade com o fluxo real**: No ESP32, as leituras seriam inseridas sequencialmente (uma por vez), e o aviso para arquivos com múltiplas linhas ajuda a manter essa fidelidade.
-
-- **Tolerância a erros**: Arquivos com linhas extras não quebram o sistema, mas o usuário é alertado de que apenas a primeira linha será processada.
-
-<br>
-
-## 🌦️ Integração com API Pública:
-
-O sistema oferece integração com a API do **OpenWeatherMap** para fornecer recomendações de irrigação baseadas em condições climáticas em tempo real. Essa funcionalidade está disponível na opção 6 do menu principal.
-
-### ⚙️ Funcionalidades
-
-Ao selecionar a consulta de previsão do tempo, o sistema exibe:
-
-- Temperatura atual e umidade do ar
-- Condições meteorológicas (ex.: céu limpo, chuva leve)
-- Indicação de chuva prevista
-- Horário da última atualização dos dados
-- Gera recomendações automáticas para ajustes no cronograma de irrigação com base nos dados climáticos
-
-### Requisitos de Acesso
-
-- É necessário possuir uma chave de API válida do OpenWeatherMap
-- A chave deve ser configurada como variável de ambiente no sistema com o nome `WEATHER_API_KEY`
-
-### 🔑 Sobre a API Key do OpenWeatherMap
-
-Para integrar com a API do OpenWeatherMap, você precisará obter uma chave de API (API Key). Siga os passos abaixo:
-
----
-
-#### 📝 Como obter sua API Key gratuita
-
-#### Cadastro no OpenWeatherMap
-
-Acesse: [https://home.openweathermap.org/users/sign_up](https://home.openweathermap.org/users/sign_up)
-
-1. Preencha o formulário com seus dados (nome, e-mail, senha).
-2. Aceite os termos e clique para finalizar o cadastro.
-
-#### Ativar sua conta
-
-1. Verifique seu e-mail.
-2. Clique no link de ativação enviado pelo OpenWeatherMap.
-
-#### Encontrar sua API Key
-
-1. Faça login em: [https://home.openweathermap.org/](https://home.openweathermap.org/)
-2. No menu superior, clique em **"API keys"**.
-3. Uma chave padrão será exibida. Você pode usá-la ou criar uma nova.
-
----
-
-#### 📦 Planos disponíveis
-
-O plano gratuito é suficiente para a proposta deste projeto (limite de requisições por minuto/dia, etc.).
-
----
-
-### ⚙️ Como configurar a API Key no sistema
-
-#### 💻 Linux / macOS (Terminal Bash/Zsh)
-
-```bash
-export WEATHER_API_KEY="SUA_CHAVE_AQUI"
-````
-- Essa variável ficará disponível apenas durante a sessão atual.
-Para torná-la permanente, adicione ao seu `.bashrc`, `.zshrc` ou `.bash_profile`.
-
-#### 🪟 Windows (PowerShell)
-
-```powershell
-$env:WEATHER_API_KEY="SUA_CHAVE_AQUI"
-````
-- Essa variável ficará disponível apenas durante a sessão atual do powershell.
-- Se quiser tornar a variável permanente no Windows, use:
-  
- ```powershell
-[System.Environment]::SetEnvironmentVariable("WEATHER_API_KEY", "SUA_CHAVE_AQUI", "User")
-````
-
-#### 🚀 Uso no programa
-
-**Após definir a variável:**
-
-1. Se definiu como permanente, reinicie o terminal ou o computador para garantir que ela esteja acessível nas novas sessões.
-
-2. Execute o programa e selecione a opção 6, que inicializa a integração com o OpenWeatherMap.
-
-### Observações Importantes
-
-- O sistema continua funcionando normalmente mesmo sem a chave de API configurada
-- A funcionalidade de previsão do tempo ficará inacessível até a configuração adequada
-- A primeira consulta ao serviço meteorológico inicializa a integração, que é mantida para consultas subsequentes
-
-### 📋 Exemplo de saída
-
-```bash
-=== Dados Climáticos Atuais ===
-Cidade: São Paulo
-Temperatura: 23.5°C
-Umidade do ar: 78%
-Condições: Nublado
-Chuva prevista: Não
-Última atualização: 2023-11-15 14:30:00
-
-=== Recomendação para Irrigação ===
-Recomendação: MANTER programa normal de irrigação
-```
-
-<br>
-
-### 📊 Visualização de Dados:
-
-O dashboard foi desenvolvido com o objetivo de **transformar dados técnicos coletados dos sensores em informações visuais claras e acionáveis**, mesmo para usuários não técnicos (como agricultores, técnicos de campo ou gestores).
-
-A estrutura visual foi pensada para permitir uma leitura **rápida, comparativa e intuitiva** dos principais indicadores da plantação monitorada.
-
----
-
-#### 💧 1. Umidade do Solo + Acionamento da Bomba
-
-- **Gráfico de linha** mostra a variação da umidade ao longo do tempo.
-- **Pontos vermelhos** marcam os momentos em que a bomba de irrigação foi acionada automaticamente.
-- O objetivo é ajudar o usuário a:
-  - Ver se a bomba está ativando na hora certa (baixa umidade)
-  - Confirmar se a irrigação teve efeito (a umidade subiu depois?)
-
----
-
-#### ⚗️ 2. Variação do pH
-
-- **Gráfico de linha** mostra o valor do pH do solo em cada leitura.
-- Uma **faixa verde** indica o intervalo ideal (entre 6.0 e 7.5).
-- O usuário consegue identificar:
-  - Se o solo está ácido ou alcalino demais
-  - Se há necessidade de correção química
-
----
-
-#### 🧪 3. Nutrientes do Solo (Fósforo e Potássio)
-
-- Os nutrientes foram separados em dois **gráficos de barras binários (Presente/Ausente)**, lado a lado.
-- Isso evita confusão visual com sobreposição e permite analisar:
-  - Qual nutriente tem maior ausência
-  - Se existe um padrão de deficiência ao longo do tempo
-
----
-
-#### 📋 4. Interface Responsiva
-
-- Os gráficos foram dispostos em colunas para facilitar comparações lado a lado (ex: umidade vs. pH).
-- As caixas de texto explicativas ajudam o usuário a entender **como interpretar cada gráfico** e **que decisões tomar**.
-
-<br>
+No código C++, foram implementadas funções para atualizar o display LCD a cada nova leitura dos sensores, garantindo que os dados exibidos estejam sempre atualizados. O diagrama do circuito no Wokwi foi ajustado para incluir as conexões necessárias entre o ESP32 e o display LCD, conforme ilustrado na imagem acima.
 
 ## 📁 Estrutura do Projeto
 
 ```bash
-/chap1-phase3-agricultural-machine
-├── entrega1_esp32/               # Entrega 1: sistema físico com ESP32
-│   ├── src/
-│   │   └── main.cpp
-│   ├── diagram.json            # Circuito simulado no Wokwi
-│   ├── platformio.ini          # Configuração do PlatformIO
-│   ├── wokwi.toml              # Caminho para firmware na simulação
-│
-├── entrega2_python/            # Entrega 2: scripts em Python
-│   ├── database/               # Arquivos com operação e setup do banco de dados
-│   │   └── db_operation.py
-│   │   └── db_setup.py
-│   ├── farm_data.db            # Banco de dados
-│   ├── weather_integration.py  # Integração com API climática
-│   ├── main.py                 # Sistema principal com Armazemando e CRUD
-│   ├── dashboard.py            # Dashboard para facilitar tomadas de decisões
-│   ├── sample_data.py          # Dados Iniciais de teste
-│
-├── assets/                        # Imagens utilizadas no README
-│   ├── circuito_diagrama.png   # Print do circuito no Wokwi
-│   ├── logo_fiap.png           # Logo da faculdade
-│   ├── tabela_sql.png          # Print da visualização da tabela via SQLite Viewer na IDE
-│
-├── .gitignore                  # Arquivos/pastas ignorados pelo Git
-└── README.md                   # Documentação geral do projeto
+/chap1-phase4-agricultural-machine
+├── src/                                # Código fonte
+│   ├── application/                    # Código fonte do CRUD
+│   │   ├── db_operations.py            # Operações com o banco de dados
+│   │   ├── db_setup.py                 # Setup do banco de dados
+│   │   ├── farm_data.db                # Banco de dados SQLite
+│   │   ├── main.py                     # Função main
+│   │   └── weather_integration.py      # Integração com API de tempo
+│   ├── streamlit/                      # Interfaces streamlit
+│   │   ├── pages/                      # Subpáginas streamlit
+│   │   │   ├──  dashboard.py           # Inteface dashboard
+│   │   │   └──  machine_learning.py    # Interface previsão de machine learning
+│   │   └── home.py                     # Interface padrão home
+│   ├── wokwi/                          # Simulação wokwi
+│   │   ├── src/                        # Código fonte simulação
+│   │   │   └──  main.cpp               # Função main
+│   │   ├── platformio.ini              # Configuração do PlatformIO
+│   │   ├── driagram.json               # Configuração circuito
+│   │   └── wokwi.toml                  # Configuração wokwi
+├── assets/                             # Imagens utilizadas no README
+│   ├── circuito_diagrama_antigo.png 
+│   ├── circuito_diagrama.png          
+│   ├── logo-fiap.png                   
+│   ├── serial_plotter.png              
+│   ├── streamlit_dash1.png             
+│   ├── streamlit_dash2.png            
+│   ├── streamlit_dash3.png             
+│   ├── streamlit_dash4.png             
+│   └── streamlit_machine_learning.png
+├── documents/                          # Documentos utilizados
+│   ├── coletas-dados-normalizados.csv  # Arquivo com dados coletados normalizados        
+│   ├── coletas.csv                     # Arquivo com dados coletados brutos 
+│   ├── decision_tree_model.pkl         # Modelo treinado extraído
+│   ├── machine_learning.ipynb          # Modelagem preditiva 
+│   └── sample_data.txt                 # Arquivo usado na pliacação python
+├── .gitignore                          # Arquivos/pastas ignorados pelo Git
+└── README.md                           # Documentação geral do projeto
 ```
 
 <br>
@@ -414,7 +290,7 @@ A estrutura visual foi pensada para permitir uma leitura **rápida, comparativa 
 - Git instalado na máquina (para clonar o repositório)
 - As seguintes bibliotecas instaladas:
   ```bash
-  pip install streamlit pandas matplotlib seaborn requests
+  pip install streamlit pandas matplotlib seaborn requests missingno sklearn joblib
   ```
 
 ---
@@ -429,14 +305,14 @@ A estrutura visual foi pensada para permitir uma leitura **rápida, comparativa 
    - Execute o comando:
 
      ```bash
-     git clone https://github.com/fiap-ia-2025/chap1-phase3-agricultural-machine.git
+     git clone https://github.com/fiap-ia-2025/chap1-phase4-agricultural-machine.git
      ```
 
 <br>
 
-2. **Abra o VS Code e carregue apenas a pasta entrega1_esp32 como uma janela separada.**
+2. **Abra o VS Code e carregue apenas a pasta /src/wokwi como uma janela separada.**
 
-- Não abra a pasta raiz do repositório. Clique em "Abrir Pasta" no VS Code e selecione diretamente `entrega1_esp32`.
+- Não abra a pasta raiz do repositório. Clique em "Abrir Pasta" no VS Code e selecione diretamente `wokwi`.
 
 <br>
 
@@ -465,15 +341,16 @@ A estrutura visual foi pensada para permitir uma leitura **rápida, comparativa 
   - Valor de pH (simulado via LDR)
   - Presença/ausência de fósforo e potássio (botões)
   - Estado da bomba (ligada ou desligada)
+  - Temperatura
 
   <br>
 
 6. **Copie a linha gerada no monitor serial da simulação**
 
-- A simulação exibe uma linha com os seguintes dados (exemplo):
+- A simulação exibe os valores da simulação. Copie os valores e gere uma linha igual a:
 
   ```bash
-   P=Presente, K=Presente, Umidade=74.50%, pH=3.4, Bomba=0
+   P=Presente, K=Presente, Umidade=74.50%, pH=3.4, Bomba=0, Temperatura=30.0
   ```
 
   - Copie essa linha para usar na próxima etapa
@@ -482,26 +359,24 @@ A estrutura visual foi pensada para permitir uma leitura **rápida, comparativa 
 
 ### Parte 2 – Sistema de CRUD e Visualização (Python)
 
-7. **Abra outra janela do VS Code e carregue apenas a pasta `entrega2_python`**
+7. **Abra outra janela do VS Code e carregue apenas a pasta `src`**
 
-- Novamente, não abra a raiz — selecione apenas a pasta `entrega2_python`
 
 <br>
 
 8. **Cole o dado simulado no arquivo `sample_data.txt`**
 
-- Abra o arquivo `sample_data.txt` na pasta
+- Abra o arquivo `sample_data.txt` na pasta /documents
 - Substitua ou adicione a linha copiada na simulação.
 
   - ⚠️ **Atenção:** apenas a **primeira linha** do arquivo (`linha 1`) será processada pelo sistema, mesmo que o arquivo contenha várias linhas
-
-  > Para mais detalhes, consulte a seção [Sobre o arquivo sample_datatxt](#sobre-o-arquivo-sample_datatxt)
 
 <br>
 
 9. **Execute o sistema**
 
-- No terminal do VS Code (dentro da pasta `entrega2_python`), execute:
+- No terminal do VS Code, na raiz do projeto, execute:
+
   ```bash
   python main.py
   ```
@@ -535,41 +410,10 @@ Escolha uma opção:
 
 - Execute o comando:
   ```bash
-  streamlit run dashboard.py
+  streamlit run home.py
   ```
 - Após rodar acesse o dashboard no navegador pelo link: http://localhost:8501
 
-<br>
-
----
-
-### ℹ️ Observações
-
-- Importante: devido à forma como o VS Code e o PlatformIO gerenciam ambientes, o projeto só funcionará corretamente se cada pasta (`entrega1_esp32` e `entrega2_python`) for aberta em uma janela separada do VS Code.
-
-- Certifique-se de que o dado copiado da simulação no Wokwi siga o mesmo formato esperado pelo script da `entrega2`.
-<br>
-
----
-
-### 🧪 Dicas para testar Aplicação
-
-#### Simulação Wokwi
-
-- **Botões pressionados = nutriente ausente**
-- **LDR e DHT22** podem ser alterados em tempo real na simulação clicando sobre eles
-- A bomba (LED) **acende somente se a umidade estiver abaixo de 40%**
-
-#### Visualizando o banco na IDE (SQLite Viewer)
-
-- Se você instalou a extensão **SQLite Viewer** (VS Code ou equivalente), pode abrir o arquivo farm_data.db e navegar pelas tabelas como se estivesse em um SGBD (Sistema de Gerenciamento de Banco de Dados).
-- Durante os testes, execute operações CRUD pelo menu interativo da aplicação.
-- Caso já esteja com uma tabela aberta no viewer, ela não se atualiza automaticamente depois de uma operação. Basta clicar em Refresh/Reload na interface do SQLite para ver as mudanças.
-
-![Visualização da tabela no SQLite](assets/tabela_sqlite.png)  
-*Esta imagem mostra um exemplo de tabela SQLite deste projeto visualizada diretamente no VS Code.  
-Os dados exibidos podem não corresponder exatamente aos que você verá ao rodar o projeto, devido a testes ou atualizações realizadas.  
-O objetivo principal desta imagem é ilustrar a estrutura do banco, que se mantém constante independentemente dos valores dos dados.*
 <br>
 
 ## ✅ Conclusão
